@@ -41,14 +41,16 @@ view_rule:
   image/jpeg: icat -w 72
   image/png: icat -w 72
   image/gif: icat -w 72
+  image/svg+xml: icat -w 72
   audio/flac: mediainfo
-  audio/acc: mediainfo
+  rudio/acc: mediainfo
   audio/mpeg: mediainfo
   audio/wav: mediainfo
   video/mp4: mediainfo
   video/x-flv: mediainfo
   video/x-msvideo: mediainfo
   video/x-matroska: mediainfo
+  application/gzip: mediainfo
   application/x-tar: atool --list --
   application/zip: atool --list --
   application/x-gzip: atool --list --
@@ -104,6 +106,7 @@ open_rule:
   image/jpeg: sxiv # media_preview {} 90 8 81 81
   image/png: sxiv # media_preview {} 90 8 81 81
   image/gif: sxiv -a
+  image/svg+xml: inkscape
   audio/flac: mpv
   audio/acc: mpv
   audio/mpeg: mpv
@@ -112,6 +115,7 @@ open_rule:
   video/x-flv: mpv --geometry=100%x100%
   video/x-msvideo: mpv --geometry=100%x100%
   video/x-matroska: mpv --geometry=100%x100%
+  application/gzip: xournal # .xoj -> xournal
   application/x-tar: atool --list --
   application/zip: atool --list --
   application/x-gzip: atool --list --
