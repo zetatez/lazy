@@ -80,7 +80,7 @@ open_rule:
   text/x-script.python: nvim
   text/x-tex: nvim
   text/x-diff: nvim
-  text/csv: sc-im
+  text/csv: nvim
   text/html: nvim
   text/javascript: nvim
   text/troff: nvim
@@ -88,11 +88,11 @@ open_rule:
   text/css: nvim
   text/rtf: wps
   message/rfc822: nvim
-  application/vnd.openxmlformats-officedocument.spreadsheetml.sheet: sc-im
+  application/vnd.openxmlformats-officedocument.spreadsheetml.sheet: nvim
   application/vnd.openxmlformats-officedocument.wordprocessingml.document: wps
   application/vnd.openxmlformats-officedocument.presentationml.presentation: wps
   application/msword: wps
-  application/vnd.ms-excel: sc-im
+  application/vnd.ms-excel: nvim
   application/vnd.ms-outlook: wps
   application/vnd.ms-powerpoint: wps
   application/vnd.ms-project: wps
