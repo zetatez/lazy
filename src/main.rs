@@ -217,6 +217,9 @@ fn main() {
 
     let option = &args[1];
     let file_path = &args[2];
+    if file_path.trim() == "" {
+        return;
+    }
 
     let lazy: Lazy = Lazy::new(load_config(), file_path.to_string());
     match option.as_str() {
