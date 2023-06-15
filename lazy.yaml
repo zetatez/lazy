@@ -1,26 +1,26 @@
 view_rule:
-  inode/x-empty: bat --color=always --paging=never --line-range :500
-  text/plain: bat --color=always --paging=never --line-range :500
+  inode/x-empty: bat --color=always --paging=never --tabs=2 --line-range :500
+  text/plain: bat --color=always --paging=never --tabs=2 --line-range :500
   application/pdf: mediainfo # pdftotext -l 10 -nopgbrk -q -- {} -
   application/epub+zip: pandoc -s -t markdown --
   image/vnd.djvu: djvutxt
-  application/json: bat --color=always --paging=never --line-range :500
-  text/x-shellscript: bat --color=always --paging=never --line-range :500
-  text/x-c: bat --color=always --paging=never --line-range :500
-  text/x-c++: bat --color=always --paging=never --line-range :500
-  text/x-java: bat --color=always --paging=never --line-range :500
-  text/x-makefile: bat --color=always --paging=never --line-range :500
-  text/x-ruby: bat --color=always --paging=never --line-range :500
-  text/x-script.python: bat --color=always --paging=never --line-range :500
-  text/x-tex: bat --color=always --paging=never --line-range :500
-  text/x-diff: bat --color=always --paging=never --line-range :500
-  text/csv: bat --color=always --paging=never --line-range :500
-  text/html: bat --color=always --paging=never --line-range :500
-  text/javascript: bat --color=always --paging=never --line-range :500
-  text/troff: bat --color=always --paging=never --line-range :500
-  text/xml: bat --color=always --paging=never --line-range :500
-  text/css: bat --color=always --paging=never --line-range :500
-  message/rfc822: bat --color=always --paging=never --line-range :500
+  application/json: bat --color=always --paging=never --tabs=2 --line-range :500
+  text/x-shellscript: bat --color=always --paging=never --tabs=2 --line-range :500
+  text/x-c: bat --color=always --paging=never --tabs=2 --line-range :500
+  text/x-c++: bat --color=always --paging=never --tabs=2 --line-range :500
+  text/x-java: bat --color=always --paging=never --tabs=2 --line-range :500
+  text/x-makefile: bat --color=always --paging=never --tabs=2 --line-range :500
+  text/x-ruby: bat --color=always --paging=never --tabs=2 --line-range :500
+  text/x-script.python: bat --color=always --paging=never --tabs=2 --line-range :500
+  text/x-tex: bat --color=always --paging=never --tabs=2 --line-range :500
+  text/x-diff: bat --color=always --paging=never --tabs=2 --line-range :500
+  text/csv: bat --color=always --paging=never --tabs=2 --line-range :500
+  text/html: bat --color=always --paging=never --tabs=2 --line-range :500
+  text/javascript: bat --color=always --paging=never --tabs=2 --line-range :500
+  text/troff: bat --color=always --paging=never --tabs=2 --line-range :500
+  text/xml: bat --color=always --paging=never --tabs=2 --line-range :500
+  text/css: bat --color=always --paging=never --tabs=2 --line-range :500
+  message/rfc822: bat --color=always --paging=never --tabs=2 --line-range :500
   application/vnd.openxmlformats-officedocument.spreadsheetml.sheet: xls2csv --
   application/vnd.openxmlformats-officedocument.wordprocessingml.document: pandoc -s -t markdown --
   application/vnd.openxmlformats-officedocument.presentationml.presentation: pandoc -s -t markdown --
@@ -30,12 +30,12 @@ view_rule:
   application/vnd.ms-powerpoint: pandoc -s -t markdown --
   application/vnd.ms-project: pandoc -s -t markdown --
   application/vnd.visio: pandoc -s -t markdown --
-  application/x-javascript: bat --color=always --paging=never --line-range :500
-  application/x-sh: bat --color=always --paging=never --line-range :500
-  application/x-latex: bat --color=always --paging=never --line-range :500
-  application/javascript: bat --color=always --paging=never --line-range :500
-  application/xml: bat --color=always --paging=never --line-range :500
-  application/xhtml+xml: bat --color=always --paging=never --line-range :500
+  application/x-javascript: bat --color=always --paging=never --tabs=2 --line-range :500
+  application/x-sh: bat --color=always --paging=never --tabs=2 --line-range :500
+  application/x-latex: bat --color=always --paging=never --tabs=2 --line-range :500
+  application/javascript: bat --color=always --paging=never --tabs=2 --line-range :500
+  application/xml: bat --color=always --paging=never --tabs=2 --line-range :500
+  application/xhtml+xml: bat --color=always --paging=never --tabs=2 --line-range :500
   image/jpg: icat -w 72
   image/jpeg: icat -w 72
   image/png: icat -w 72
