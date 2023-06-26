@@ -1,132 +1,359 @@
-view_rule:
-  inode/x-empty: bat --color=always --paging=never --tabs=2 --line-range :500
-  text/plain: bat --color=always --paging=never --tabs=2 --line-range :500
-  application/pdf: mediainfo # pdftotext -l 10 -nopgbrk -q -- {} -
-  application/epub+zip: pandoc -s -t markdown --
-  image/vnd.djvu: djvutxt
-  application/json: bat --color=always --paging=never --tabs=2 --line-range :500
-  text/x-shellscript: bat --color=always --paging=never --tabs=2 --line-range :500
-  text/x-c: bat --color=always --paging=never --tabs=2 --line-range :500
-  text/x-c++: bat --color=always --paging=never --tabs=2 --line-range :500
-  text/x-java: bat --color=always --paging=never --tabs=2 --line-range :500
-  text/x-makefile: bat --color=always --paging=never --tabs=2 --line-range :500
-  text/x-ruby: bat --color=always --paging=never --tabs=2 --line-range :500
-  text/x-script.python: bat --color=always --paging=never --tabs=2 --line-range :500
-  text/x-tex: bat --color=always --paging=never --tabs=2 --line-range :500
-  text/x-diff: bat --color=always --paging=never --tabs=2 --line-range :500
-  text/csv: bat --color=always --paging=never --tabs=2 --line-range :500
-  text/html: bat --color=always --paging=never --tabs=2 --line-range :500
-  text/javascript: bat --color=always --paging=never --tabs=2 --line-range :500
-  text/troff: bat --color=always --paging=never --tabs=2 --line-range :500
-  text/xml: bat --color=always --paging=never --tabs=2 --line-range :500
-  text/css: bat --color=always --paging=never --tabs=2 --line-range :500
-  message/rfc822: bat --color=always --paging=never --tabs=2 --line-range :500
-  application/vnd.openxmlformats-officedocument.spreadsheetml.sheet: xls2csv --
-  application/vnd.openxmlformats-officedocument.wordprocessingml.document: pandoc -s -t markdown --
-  application/vnd.openxmlformats-officedocument.presentationml.presentation: pandoc -s -t markdown --
-  application/msword: catdoc --
-  application/vnd.ms-excel: xls2csv --
-  application/vnd.ms-outlook: pandoc -s -t markdown --
-  application/vnd.ms-powerpoint: pandoc -s -t markdown --
-  application/vnd.ms-project: pandoc -s -t markdown --
-  application/vnd.visio: pandoc -s -t markdown --
-  application/x-javascript: bat --color=always --paging=never --tabs=2 --line-range :500
-  application/x-sh: bat --color=always --paging=never --tabs=2 --line-range :500
-  application/x-latex: bat --color=always --paging=never --tabs=2 --line-range :500
-  application/javascript: bat --color=always --paging=never --tabs=2 --line-range :500
-  application/xml: bat --color=always --paging=never --tabs=2 --line-range :500
-  application/xhtml+xml: bat --color=always --paging=never --tabs=2 --line-range :500
-  image/jpg: icat -w 72
-  image/jpeg: icat -w 72
-  image/png: icat -w 72
-  image/gif: icat -w 72
-  image/svg+xml: img2txt
-  audio/flac: mediainfo
-  rudio/acc: mediainfo
-  audio/mpeg: mediainfo
-  audio/wav: mediainfo
-  video/mp4: mediainfo
-  video/x-flv: mediainfo
-  application/gzip: mediainfo
-  application/x-tar: atool --list --
-  application/zip: atool --list --
-  application/x-gzip: atool --list --
-  application/rar: atool --list --
-  application/x-7z-compressed: atool --list --
-  application/x-rar: atool --list --
-  application/x-rar-compressed: atool --list --
-  application/x-cpio: atool --list --
-  application/java-archive: atool --list --
+view:
+  preset:
+    default.text: bat --color=always --paging=always --tabs=2 --line-range :500
+    default.image: mediainfo
+    default.autio: mediainfo
+    default.video: mediainfo
+    default.reader: mediainfo
+    default.archive: atool --list
+    default.office: mediainfo
+  ext:
+    # text
+    build: default.text
+    c: default.text
+    cmake: default.text
+    conf: default.text
+    cpp: default.text
+    css: default.text
+    csv: default.text
+    cu: default.text
+    ebuild: default.text
+    eex: default.text
+    env: default.text
+    ex: default.text
+    exs: default.text
+    go: default.text
+    h: default.text
+    hpp: default.text
+    hs: default.text
+    html: default.text
+    ini: default.text
+    java: default.text
+    js: default.text
+    json: default.text
+    kt: default.text
+    log: default.text
+    lua: default.text
+    md: default.text
+    micro: default.text
+    ninja: default.text
+    py: default.text
+    rkt: default.text
+    rs: default.text
+    scss: default.text
+    sh: default.text
+    srt: default.text
+    svelte: default.text
+    tex: default.text
+    toml: default.text
+    tsx: default.text
+    txt: default.text
+    vim: default.text
+    xml: default.text
+    yaml: default.text
+    yml: default.text
+    # image
+    avif: default.image
+    bmp: default.image
+    gif: default.image
+    heic: default.image
+    jpe: default.image
+    jpeg: default.image
+    jpg: default.image
+    pgm: default.image
+    png: default.image
+    ppm: default.image
+    svg: default.image
+    tiff: default.image
+    webp: default.image
+    # audio formats
+    flac: default.audio
+    m3u: default.video
+    m4a: default.audio
+    mp3: default.audio
+    ogg: default.audio
+    wav: default.audio
+    # video formats
+    av1: default.video
+    avi: default.video
+    flv: default.video
+    m4v: default.video
+    mkv: default.video
+    mov: default.video
+    mp4: default.video
+    ts: default.video
+    webm: default.video
+    wmv: default.video
+    # archive formats
+    7z: default.archive
+    bz2: default.archive
+    gz: default.archive
+    rar: default.archive
+    tar: default.archive
+    tgz: default.archive
+    xz: default.archive
+    zip: default.archive
+    # office
+    doc: default.office
+    docx: default.office
+    odf: default.office
+    odp: default.office
+    ods: default.office
+    odt: default.office
+    ppt: default.office
+    pptx: default.office
+    xls: default.office
+    xlsx: default.office
+    # reader
+    epub: default.reader
+    pdf: default.reader
+    # misc
+    kra: mediainfo
+    torrent: mediainfo
+  mime:
+    application/epub+zip: pandoc -s -t markdown
+    application/gzip: mediainfo
+    application/java-archive: default.archive
+    application/javascript: default.text
+    application/json: default.text
+    application/msword: catdoc
+    application/pdf: mediainfo # pdftotext -l 10 -nopgbrk -q -- {} -
+    application/rar: default.archive
+    application/vnd.ms-excel: xls2csv
+    application/vnd.ms-outlook: pandoc -s -t markdown
+    application/vnd.ms-powerpoint: pandoc -s -t markdown
+    application/vnd.ms-project: pandoc -s -t markdown
+    application/vnd.openxmlformats-officedocument.presentationml.presentation: pandoc -s -t markdown
+    application/vnd.openxmlformats-officedocument.spreadsheetml.sheet: xls2csv
+    application/vnd.openxmlformats-officedocument.wordprocessingml.document: pandoc -s -t markdown
+    application/vnd.visio: pandoc -s -t markdown
+    application/x-7z-compressed: default.archive
+    application/x-cpio: default.archive
+    application/x-gzip: default.archive
+    application/x-javascript: default.text
+    application/x-latex: default.text
+    application/x-rar-compressed: default.archive
+    application/x-rar: default.archive
+    application/x-sh: default.text
+    application/x-tar: default.archive
+    application/xhtml+xml: default.text
+    application/xml: default.text
+    application/zip: default.archive
+    audio/flac: default.audio
+    audio/mpeg: default.audio
+    audio/wav: default.audio
+    image/gif: default.image
+    image/jpeg: default.image
+    image/jpg: default.image
+    image/png: default.image
+    image/svg+xml: default.image
+    image/vnd.djvu: djvutxt
+    inode/x-empty: default.text
+    message/rfc822: default.text
+    rudio/acc: default.audio
+    text/css: default.text
+    text/csv: default.text
+    text/html: default.text
+    text/javascript: default.text
+    text/plain: default.text
+    text/troff: default.text
+    text/x-c++: default.text
+    text/x-c: default.text
+    text/x-diff: default.text
+    text/x-java: default.text
+    text/x-makefile: default.text
+    text/x-ruby: default.text
+    text/x-script.python: default.text
+    text/x-shellscript: default.text
+    text/x-tex: default.text
+    text/xml: default.text
+    video/mp4: default.video
+    video/x-flv: default.video
 
-open_rule:
-  inode/x-empty: nvim
-  text/plain: nvim
-  application/pdf: zathura
-  application/epub+zip: foliate
-  image/vnd.djvu: okular
-  application/json: nvim
-  text/x-shellscript: nvim
-  text/x-c: nvim
-  text/x-c++: nvim
-  text/x-java: nvim
-  text/x-makefile: nvim
-  text/x-ruby: nvim
-  text/x-script.python: nvim
-  text/x-tex: nvim
-  text/x-diff: nvim
-  text/csv: nvim
-  text/html: nvim
-  text/javascript: nvim
-  text/troff: nvim
-  text/xml: nvim
-  text/css: nvim
-  message/rfc822: nvim
-  application/vnd.openxmlformats-officedocument.spreadsheetml.sheet: nvim
-  application/vnd.openxmlformats-officedocument.wordprocessingml.document: wps
-  application/vnd.openxmlformats-officedocument.presentationml.presentation: wps
-  application/msword: wps
-  application/vnd.ms-excel: nvim
-  application/vnd.ms-outlook: wps
-  application/vnd.ms-powerpoint: wps
-  application/vnd.ms-project: wps
-  application/vnd.visio: wps
-  application/x-javascript: nvim
-  application/x-sh: nvim
-  application/x-latex: nvim
-  application/javascript: nvim
-  application/xml: nvim
-  application/xhtml+xml: nvim
-  image/jpg: sxiv
-  image/jpeg: sxiv
-  image/png: sxiv
-  image/gif: sxiv -a
-  image/svg+xml: inkscape
-  audio/flac: mpv
-  audio/acc: mpv
-  audio/mpeg: mpv
-  audio/wav: mpv
-  video/mp4: mpv --geometry=100%x100%
-  video/x-flv: mpv --geometry=100%x100%
-  application/gzip: xournalpp
-  application/x-tar: atool --list --
-  application/zip: atool --list --
-  application/x-gzip: atool --list --
-  application/rar: atool --list --
-  application/x-7z-compressed: atool --list --
-  application/x-rar: atool --list --
-  application/x-rar-compressed: atool --list --
-  application/x-cpio: atool --list --
-  application/java-archive: atool --list --
+open:
+  preset:
+    default.text: nvim
+    default.image: sxiv
+    default.autio: mpv
+    default.video: mpv
+    default.reader: zathura
+    default.archive: atool --list
+    default.office: wps
+  ext:
+    # text
+    build: default.text
+    c: default.text
+    cmake: default.text
+    conf: default.text
+    cpp: default.text
+    css: default.text
+    csv: default.text
+    cu: default.text
+    ebuild: default.text
+    eex: default.text
+    env: default.text
+    ex: default.text
+    exs: default.text
+    go: default.text
+    h: default.text
+    hpp: default.text
+    hs: default.text
+    html: default.text
+    ini: default.text
+    java: default.text
+    js: default.text
+    json: default.text
+    kt: default.text
+    log: default.text
+    lua: default.text
+    md: default.text
+    micro: default.text
+    ninja: default.text
+    py: default.text
+    rkt: default.text
+    rs: default.text
+    scss: default.text
+    sh: default.text
+    srt: default.text
+    svelte: default.text
+    tex: default.text
+    toml: default.text
+    tsx: default.text
+    txt: default.text
+    vim: default.text
+    xml: default.text
+    yaml: default.text
+    yml: default.text
+    # image
+    avif: default.image
+    bmp: default.image
+    gif: default.image
+    heic: default.image
+    jpe: default.image
+    jpeg: default.image
+    jpg: default.image
+    pgm: default.image
+    png: default.image
+    ppm: default.image
+    svg: default.image
+    tiff: default.image
+    webp: default.image
+    # audio formats
+    flac: default.audio
+    m3u: default.video
+    m4a: default.audio
+    mp3: default.audio
+    ogg: default.audio
+    wav: default.audio
+    # video formats
+    av1: default.video
+    avi: default.video
+    flv: default.video
+    m4v: default.video
+    mkv: default.video
+    mov: default.video
+    mp4: default.video
+    ts: default.video
+    webm: default.video
+    wmv: default.video
+    # archive formats
+    7z: default.archive
+    bz2: default.archive
+    gz: default.archive
+    rar: default.archive
+    tar: default.archive
+    tgz: default.archive
+    xz: default.archive
+    zip: default.archive
+    # office
+    doc: default.office
+    docx: default.office
+    odf: default.office
+    odp: default.office
+    ods: default.office
+    odt: default.office
+    ppt: default.office
+    pptx: default.office
+    xls: default.office
+    xlsx: default.office
+    # reader
+    epub: default.reader
+    pdf: default.reader
+    # misc
+    kra: krita
+    torrent: transmission-gtk
+  mime:
+    application/epub+zip: foliate
+    application/gzip: xournalpp
+    application/java-archive: default.archive
+    application/javascript: default.text
+    application/json: default.text
+    application/msword: default.office
+    application/pdf: default.reader
+    application/rar: default.archive
+    application/vnd.ms-excel: default.text
+    application/vnd.ms-outlook: default.office
+    application/vnd.ms-powerpoint: default.office
+    application/vnd.ms-project: default.office
+    application/vnd.openxmlformats-officedocument.presentationml.presentation: default.office
+    application/vnd.openxmlformats-officedocument.spreadsheetml.sheet: default.office
+    application/vnd.openxmlformats-officedocument.wordprocessingml.document: default.office
+    application/vnd.visio: default.office
+    application/x-7z-compressed: default.archive
+    application/x-cpio: default.archive
+    application/x-gzip: default.archive
+    application/x-javascript: default.text
+    application/x-latex: default.text
+    application/x-rar-compressed: default.archive
+    application/x-rar: default.archive
+    application/x-sh: default.text
+    application/x-tar: default.archive
+    application/xhtml+xml: default.text
+    application/xml: default.text
+    application/zip: default.archive
+    audio/acc: default.audio
+    audio/flac: default.audio
+    audio/mpeg: default.audio
+    audio/wav: default.audio
+    image/gif: sxiv -a
+    image/jpeg: default.image
+    image/jpg: default.image
+    image/png: default.image
+    image/svg+xml: inkscape
+    image/vnd.djvu: okular
+    inode/x-empty: default.text
+    message/rfc822: default.text
+    text/css: default.text
+    text/csv: default.text
+    text/html: default.text
+    text/javascript: default.text
+    text/plain: default.text
+    text/troff: default.text
+    text/x-c++: default.text
+    text/x-c: default.text
+    text/x-diff: default.text
+    text/x-java: default.text
+    text/x-makefile: default.text
+    text/x-ruby: default.text
+    text/x-script.python: default.text
+    text/x-shellscript: default.text
+    text/x-tex: default.text
+    text/xml: default.text
+    video/mp4: default.video
+    video/x-flv: default.video
 
-exec_rule:
-  sh: sh {}
-  py: python {}
-  go: go run .
-  rs: cargo build && cargo run
-  jl: julia {}
-  js: node {}
-  c: ./build.sh
-  cpp: ./build.sh
-  java: ./build.sh
-  scala: ./build.sh
-  tex: xelatex -interaction nonstopmode {}; bibtex *.aux; xelatex -interaction nonstopmode {}; zathura *.pdf"
+exec:
+  preset:
+    exec: sh {}
+  ext:
+    sh: sh {}
+    py: python {}
+    go: go run .
+    rs: cargo build && cargo run
+    jl: julia {}
+    js: node {}
+    c: ./build.sh
+    cpp: ./build.sh
+    java: ./build.sh
+    scala: ./build.sh
+    tex: xelatex -interaction nonstopmode {}; bibtex *.aux; xelatex -interaction nonstopmode {}; zathura *.pdf"

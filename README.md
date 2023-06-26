@@ -12,27 +12,21 @@ A cli tool that will greatly improve your working efficiency.
 git clone https://github.com/zetatez/lazy.git
 cd lazy
 
-mkidr -p ~/.config/lazy
-cp -f lazy.yaml ~/.config/lazy/
-cargo install --path .
+make install
 ```
 
 ## Uninstall
 ```bash
-rm -f ~/.config/lazy/lazy.yaml
-cargo uninstall --bin lazy
+make uninstall
 ```
 
 ## Configuration
-See [*lazy.yaml*](https://github.com/zetatez/lazy/blob/main/lazy.yaml)
-
-HINTS:
-- To get mime-type of a file:
-    ```bash
-    file --dereference --brief --mime-type filename
-    ```
+See [*lazy.yaml*](https://github.com/zetatez/lazy/blob/master/lazy.yaml)
 
 ## Usage
+```bash
+lazy -h
+```
 
 ## Best Practice
 
@@ -41,14 +35,14 @@ HINTS:
     #define SUPKEY Mod4Mask
     #define TM(cmd)    { "st", "-e", "/bin/sh", "-c", cmd, NULL }
 
-    static const char *lazy_open[]       = TM("lazy -o \"\$(fd --type f --hidden --exclude .git . '/home/dionysus'|fzf --prompt='open>' --preview 'lazy -p {}' --select-1 --exit-0)\"");
-    static const char *lazy_exec[]       = TM("lazy -e \"\$(fd -e sh -e jl -e py -e tex -e c -e cpp -e go -e scala -e java -e rs -e sql --exclude .git . '/home/dionysus'|fzf --prompt='exec>' --preview 'lazy -p {}' --select-1 --exit-0)");
-    static const char *lazy_copy[]       = TM("lazy -c \"\$(fd --type f --hidden --exclude .git . '/home/dionysus'|fzf --prompt='copy>' --preview 'lazy -p {}' --select-1 --exit-0)\"");
-    static const char *lazy_rename[]     = TM("lazy -r \"\$(fd --type f --hidden --exclude .git . '/home/dionysus'|fzf --prompt='rename>' --preview 'lazy -p {}' --select-1 --exit-0)\"");
-    static const char *lazy_delete[]     = TM("lazy -d \"\$(fd --type f --hidden --exclude .git . '/home/dionysus'|fzf --prompt='delete>' --preview 'lazy -p {}' --select-1 --exit-0)\"");
-    static const char *lazy_open_wiki[]  = TM("lazy -o \"\$(fd --type f --hidden --exclude .git . '/home/dionysus/obsidian/wiki'|fzf --prompt='wikis>' --preview 'lazy -p {}' --select-1 --exit-0)\"");
-    static const char *lazy_open_book[]  = TM("lazy -o \"\$(fd -e pdf -e epub -e djvu -e mobi --exclude .git . '/home/dionysus/obsidian/library'|fzf --prompt='books>' --preview 'lazy -p {}' --reverse --select-1 --exit-0)\"");
-    static const char *lazy_open_media[] = TM("lazy -o \"\$(fd -e jpg -e jpeg -e png -e gif -e bmp -e tiff -e mp3 -e flac -e mkv -e avi -e mp4 --exclude .git . '/home/dionysus'|fzf --prompt='medias>' --preview 'lazy -p {}' --reverse --select-1 --exit-0)\"");
+    static const char *lazy_open[]       = TM("lazy -o open -f \"\$(fd --type f --hidden --exclude .git . '/home/dionysus'|fzf --prompt='open>' --preview 'lazy -p {}' --select-1 --exit-0)\"");
+    static const char *lazy_exec[]       = TM("lazy -o exec -f \"\$(fd -e sh -e jl -e py -e tex -e c -e cpp -e go -e scala -e java -e rs -e sql --exclude .git . '/home/dionysus'|fzf --prompt='exec>' --preview 'lazy -p {}' --select-1 --exit-0)");
+    static const char *lazy_copy[]       = TM("lazy -o copy -f \"\$(fd --type f --hidden --exclude .git . '/home/dionysus'|fzf --prompt='copy>' --preview 'lazy -p {}' --select-1 --exit-0)\"");
+    static const char *lazy_rename[]     = TM("lazy -o rename -f \"\$(fd --type f --hidden --exclude .git . '/home/dionysus'|fzf --prompt='rename>' --preview 'lazy -p {}' --select-1 --exit-0)\"");
+    static const char *lazy_delete[]     = TM("lazy -o delete -f \"\$(fd --type f --hidden --exclude .git . '/home/dionysus'|fzf --prompt='delete>' --preview 'lazy -p {}' --select-1 --exit-0)\"");
+    static const char *lazy_open_wiki[]  = TM("lazy -o open -f \"\$(fd --type f --hidden --exclude .git . '/home/dionysus/obsidian/wiki'|fzf --prompt='wikis>' --preview 'lazy -p {}' --select-1 --exit-0)\"");
+    static const char *lazy_open_book[]  = TM("lazy -o open -f \"\$(fd -e pdf -e epub -e djvu -e mobi --exclude .git . '/home/dionysus/obsidian/library'|fzf --prompt='books>' --preview 'lazy -p {}' --reverse --select-1 --exit-0)\"");
+    static const char *lazy_open_media[] = TM("lazy -o open -f \"\$(fd -e jpg -e jpeg -e png -e gif -e bmp -e tiff -e mp3 -e flac -e mkv -e avi -e mp4 --exclude .git . '/home/dionysus'|fzf --prompt='medias>' --preview 'lazy -p {}' --reverse --select-1 --exit-0)\"");
 
     static Key keys[] = {
 		// ...
@@ -66,14 +60,14 @@ HINTS:
 
 - Use lazy in zsh:
     ```bash
-    alias lazy-open="lazy -o \"\$(fd --type f --hidden --exclude .git . './'|fzf --prompt='open>' --preview 'lazy -p {}' --select-1 --exit-0)\""
-    alias lazy-exec="lazy -e \"\$(fd -e sh -e jl -e py -e tex -e c -e cpp -e go -e scala -e java -e rs -e sql --exclude .git . './'|fzf --prompt='exec>' --preview 'lazy -p {}' --select-1 --exit-0)\""
-    alias lazy-copy="lazy -c \"\$(fd --type f --hidden --exclude .git . './'|fzf --prompt='copy>' --preview 'lazy -p {}' --select-1 --exit-0)\""
-    alias lazy-rename="lazy -r \"\$(fd --type f --hidden --exclude .git . './'|fzf --prompt='rename>' --preview 'lazy -p {}' --select-1 --exit-0)\""
-    alias lazy-delete="lazy -d \"\$(fd --type f --hidden --exclude .git . './'|fzf --prompt='delete>' --preview 'lazy -p {}' --select-1 --exit-0)\""
-    alias lazy-open-wiki="lazy -o \"\$(fd --type f --hidden --exclude .git . '$HOME/obsidian/wiki'|fzf --prompt='wikis>' --preview 'lazy -p {}' --select-1 --exit-0)\""
-    alias lazy-open-book="lazy -o \"\$(fd -e pdf -e epub -e djvu -e mobi --exclude .git . '$HOME/obsidian/library'|fzf --prompt='books>' --preview 'lazy -p {}' --reverse --select-1 --exit-0)\""
-    alias lazy-open-media="lazy -o \"\$(fd -e jpg -e jpeg -e png -e gif -e bmp -e tiff -e mp3 -e flac -e mkv -e avi -e mp4 --exclude .git . '$HOME'|fzf --prompt='medias>' --preview 'lazy -p {}' --reverse --select-1 --exit-0)\""
+    alias lazy-open="lazy -o open -f \"\$(fd --type f --hidden --exclude .git . './'|fzf --prompt='open>' --preview 'lazy -p {}' --select-1 --exit-0)\""
+    alias lazy-exec="lazy -o exec -f \"\$(fd --type f -e sh -e jl -e py -e tex -e c -e cpp -e go -e scala -e java -e rs -e sql --exclude .git . './'|fzf --prompt='exec>' --preview 'lazy -p {}' --select-1 --exit-0)\""
+    alias lazy-copy="lazy -o copy -f \"\$(fd --type f --hidden --exclude .git . './'|fzf --prompt='copy>' --preview 'lazy -p {}' --select-1 --exit-0)\""
+    alias lazy-rename="lazy -o rename -f \"\$(fd --type f --hidden --exclude .git . './'|fzf --prompt='rename>' --preview 'lazy -p {}' --select-1 --exit-0)\""
+    alias lazy-delete="lazy -o delete -f \"\$(fd --type f --hidden --exclude .git . './'|fzf --prompt='delete>' --preview 'lazy -p {}' --select-1 --exit-0)\""
+    alias lazy-open-wiki="lazy -o open -f \"\$(fd --type f --hidden --exclude .git . '$HOME/my-wiki'|fzf --prompt='wikis>' --preview 'lazy -p {}' --select-1 --exit-0)\""
+    alias lazy-open-book="lazy -o open -f \"\$(fd --type f -e pdf -e epub -e djvu -e mobi --exclude .git . '$HOME/my-library'|fzf --prompt='books>' --preview 'lazy -p {}' --reverse --select-1 --exit-0)\""
+    alias lazy-open-media="lazy -o open -f \"\$(fd --type f -e jpg -e jpeg -e png -e gif -e bmp -e tiff -e mp3 -e flac -e mkv -e avi -e mp4 --exclude .git . '$HOME'|fzf --prompt='medias>' --preview 'lazy -p {}' --reverse --select-1 --exit-0)\""
 
     bindkey -s '^F' 'lazy-open\n'
     bindkey -s '^X' 'lazy-exec\n'
