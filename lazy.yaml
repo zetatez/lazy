@@ -30,7 +30,7 @@ view:
     ini: default.text
     java: default.text
     js: default.text
-    json: jq --color-output
+    json: jq --color-output .
     kt: default.text
     log: default.text
     lua: default.text
