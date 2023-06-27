@@ -1,11 +1,11 @@
 view:
   preset:
     default.text: bat --color=always --paging=always --tabs=2 --line-range :500
-    default.image: mediainfo
-    default.autio: mediainfo
+    default.image: img2txt
+    default.audio: mediainfo
     default.video: mediainfo
     default.reader: mediainfo
-    default.archive: atool --list
+    default.archive: atool --list --
     default.office: mediainfo
   ext:
     # text
@@ -30,7 +30,7 @@ view:
     ini: default.text
     java: default.text
     js: default.text
-    json: default.text
+    json: jq --color-output
     kt: default.text
     log: default.text
     lua: default.text
@@ -97,19 +97,19 @@ view:
     doc: default.office
     docx: default.office
     odf: default.office
-    odp: default.office
-    ods: default.office
-    odt: default.office
+    odp: pandoc -s -t markdown --
+    ods: pandoc -s -t markdown --
+    odt: pandoc -s -t markdown --
     ppt: default.office
     pptx: default.office
     xls: default.office
-    xlsx: default.office
+    xlsx: xlsx2csv --
     # reader
     epub: default.reader
     pdf: default.reader
     # misc
     kra: mediainfo
-    torrent: mediainfo
+    torrent: transmission-show --
   mime:
     application/epub+zip: pandoc -s -t markdown
     application/gzip: mediainfo
@@ -156,6 +156,7 @@ view:
     text/html: default.text
     text/javascript: default.text
     text/plain: default.text
+    text/rtf: default.text
     text/troff: default.text
     text/x-c++: default.text
     text/x-c: default.text
@@ -174,7 +175,7 @@ open:
   preset:
     default.text: nvim
     default.image: sxiv
-    default.autio: mpv
+    default.audio: mpv
     default.video: mpv
     default.reader: zathura
     default.archive: atool --list
@@ -328,6 +329,7 @@ open:
     text/html: default.text
     text/javascript: default.text
     text/plain: default.text
+    text/rtf: default.text
     text/troff: default.text
     text/x-c++: default.text
     text/x-c: default.text
@@ -348,12 +350,6 @@ exec:
   ext:
     sh: sh {}
     py: python {}
-    go: go run .
-    rs: cargo build && cargo run
+    lua: lua {}
     jl: julia {}
     js: node {}
-    c: ./build.sh
-    cpp: ./build.sh
-    java: ./build.sh
-    scala: ./build.sh
-    tex: xelatex -interaction nonstopmode {}; bibtex *.aux; xelatex -interaction nonstopmode {}; zathura *.pdf"
