@@ -293,18 +293,18 @@ func (l *Lazy) Version() {
 
 func (l *Lazy) Help() {
 	docs := `
-NAME
+	NAME
 		lazy - A cli tool that greatly improves your work efficiency.
 
-SYNOPSIS
+	SYNOPSIS
 		lazy -v
 		lazy -h
 		lazy -o option -f file
 
-DESCRIPTION
+	DESCRIPTION
 		lazy is a tool for cli to open, exec, copy, rename, delete file automatically.
 
-OPTIONS
+	OPTIONS
 		-view     view file with your default setting
 		-open     open file with your default setting
 		-exec     exec script with your default setting
@@ -312,7 +312,7 @@ OPTIONS
 		-rename   rename file
 		-delete   delete file.
 
-BUGS
+	BUGS
 		Send all bug reports with a patch to zetatez@icloud.com.
 	"`
 	fmt.Println(docs)
