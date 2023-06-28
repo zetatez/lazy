@@ -1,6 +1,6 @@
 view:
   preset:
-    default.text: bat --color=always --paging=always --tabs=2 --line-range :500
+    default.text: bat --color=always --paging=never --tabs=2 --line-range :500
     default.image: img2txt
     default.audio: mediainfo
     default.video: mediainfo
@@ -97,9 +97,9 @@ view:
     doc: default.office
     docx: default.office
     odf: default.office
-    odp: pandoc -s -t markdown --
-    ods: pandoc -s -t markdown --
-    odt: pandoc -s -t markdown --
+    odp: odt2txt
+    ods: odt2txt
+    odt: odt2txt
     ppt: default.office
     pptx: default.office
     xls: default.office
@@ -117,6 +117,7 @@ view:
     application/javascript: default.text
     application/json: default.text
     application/msword: catdoc
+    application/octet-stream: mediainfo
     application/pdf: mediainfo # pdftotext -l 10 -nopgbrk -q -- {} -
     application/rar: default.archive
     application/vnd.ms-excel: xls2csv
@@ -128,10 +129,16 @@ view:
     application/vnd.openxmlformats-officedocument.wordprocessingml.document: pandoc -s -t markdown
     application/vnd.visio: pandoc -s -t markdown
     application/x-7z-compressed: default.archive
+    application/x-bzip2: default.archive
     application/x-cpio: default.archive
+    application/x-dosexec: mediainfo
+    application/x-empty: default.text
     application/x-gzip: default.archive
     application/x-javascript: default.text
     application/x-latex: default.text
+    application/x-mach-binary: mediainfo
+    application/x-ndjson: default.text
+    application/x-pie-executable: mediainfo
     application/x-rar-compressed: default.archive
     application/x-rar: default.archive
     application/x-sh: default.text
@@ -163,6 +170,7 @@ view:
     text/x-diff: default.text
     text/x-java: default.text
     text/x-makefile: default.text
+    text/x-php: default.text
     text/x-ruby: default.text
     text/x-script.python: default.text
     text/x-shellscript: default.text
@@ -284,27 +292,34 @@ open:
     kra: krita
     torrent: transmission-gtk
   mime:
-    application/epub+zip: foliate
-    application/gzip: xournalpp
+    application/epub+zip: pandoc -s -t markdown
+    application/gzip: mediainfo
     application/java-archive: default.archive
     application/javascript: default.text
     application/json: default.text
-    application/msword: default.office
-    application/pdf: default.reader
+    application/msword: catdoc
+    application/octet-stream: mediainfo
+    application/pdf: mediainfo # pdftotext -l 10 -nopgbrk -q -- {} -
     application/rar: default.archive
-    application/vnd.ms-excel: default.text
-    application/vnd.ms-outlook: default.office
-    application/vnd.ms-powerpoint: default.office
-    application/vnd.ms-project: default.office
-    application/vnd.openxmlformats-officedocument.presentationml.presentation: default.office
-    application/vnd.openxmlformats-officedocument.spreadsheetml.sheet: default.office
-    application/vnd.openxmlformats-officedocument.wordprocessingml.document: default.office
-    application/vnd.visio: default.office
+    application/vnd.ms-excel: xls2csv
+    application/vnd.ms-outlook: pandoc -s -t markdown
+    application/vnd.ms-powerpoint: pandoc -s -t markdown
+    application/vnd.ms-project: pandoc -s -t markdown
+    application/vnd.openxmlformats-officedocument.presentationml.presentation: pandoc -s -t markdown
+    application/vnd.openxmlformats-officedocument.spreadsheetml.sheet: xls2csv
+    application/vnd.openxmlformats-officedocument.wordprocessingml.document: pandoc -s -t markdown
+    application/vnd.visio: pandoc -s -t markdown
     application/x-7z-compressed: default.archive
+    application/x-bzip2: default.archive
     application/x-cpio: default.archive
+    application/x-dosexec: mediainfo
+    application/x-empty: default.text
     application/x-gzip: default.archive
     application/x-javascript: default.text
     application/x-latex: default.text
+    application/x-mach-binary: mediainfo
+    application/x-ndjson: default.text
+    application/x-pie-executable: mediainfo
     application/x-rar-compressed: default.archive
     application/x-rar: default.archive
     application/x-sh: default.text
@@ -336,11 +351,11 @@ open:
     text/x-diff: default.text
     text/x-java: default.text
     text/x-makefile: default.text
+    text/x-php: default.text
     text/x-ruby: default.text
     text/x-script.python: default.text
     text/x-shellscript: default.text
     text/x-tex: default.text
-    text/xml: default.text
     video/mp4: default.video
     video/x-flv: default.video
 

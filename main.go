@@ -353,7 +353,6 @@ func main() {
 		return
 	}
 	if *filePath == "" {
-		NewLazy("").Help()
 		return
 	}
 	if exists, _ := isFileExists(*filePath); !exists {
