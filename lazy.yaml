@@ -60,6 +60,7 @@ view:
     jpe: default.image
     jpeg: default.image
     jpg: default.image
+    JPG: default.image
     pgm: default.image
     png: default.image
     ppm: default.image
@@ -118,7 +119,7 @@ view:
     application/json: default.text
     application/msword: catdoc
     application/octet-stream: mediainfo
-    application/pdf: mediainfo # pdftotext -l 10 -nopgbrk -q -- {} -
+    application/pdf: mediainfo
     application/rar: default.archive
     application/vnd.ms-excel: xls2csv
     application/vnd.ms-outlook: pandoc -s -t markdown
@@ -293,22 +294,22 @@ open:
     torrent: transmission-gtk
   mime:
     application/epub+zip: pandoc -s -t markdown
-    application/gzip: mediainfo
+    application/gzip: default.archive
     application/java-archive: default.archive
     application/javascript: default.text
     application/json: default.text
     application/msword: catdoc
     application/octet-stream: mediainfo
-    application/pdf: mediainfo # pdftotext -l 10 -nopgbrk -q -- {} -
+    application/pdf: default.reader
     application/rar: default.archive
-    application/vnd.ms-excel: xls2csv
-    application/vnd.ms-outlook: pandoc -s -t markdown
-    application/vnd.ms-powerpoint: pandoc -s -t markdown
-    application/vnd.ms-project: pandoc -s -t markdown
-    application/vnd.openxmlformats-officedocument.presentationml.presentation: pandoc -s -t markdown
-    application/vnd.openxmlformats-officedocument.spreadsheetml.sheet: xls2csv
-    application/vnd.openxmlformats-officedocument.wordprocessingml.document: pandoc -s -t markdown
-    application/vnd.visio: pandoc -s -t markdown
+    application/vnd.ms-excel: default.office
+    application/vnd.ms-outlook: default.office
+    application/vnd.ms-powerpoint: default.office
+    application/vnd.ms-project: default.office
+    application/vnd.openxmlformats-officedocument.presentationml.presentation: default.office
+    application/vnd.openxmlformats-officedocument.spreadsheetml.sheet: default.office
+    application/vnd.openxmlformats-officedocument.wordprocessingml.document: default.office
+    application/vnd.visio: default.office
     application/x-7z-compressed: default.archive
     application/x-bzip2: default.archive
     application/x-cpio: default.archive
