@@ -60,6 +60,7 @@ view:
     jpe: default.image
     jpeg: default.image
     jpg: default.image
+    JPG: default.image
     pgm: default.image
     png: default.image
     ppm: default.image
