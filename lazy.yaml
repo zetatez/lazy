@@ -153,6 +153,7 @@ view:
     image/gif: default.image
     image/jpeg: default.image
     image/jpg: default.image
+    image/JPG: default.image
     image/png: default.image
     image/svg+xml: default.image
     image/vnd.djvu: djvutxt
@@ -242,6 +243,7 @@ open:
     jpe: default.image
     jpeg: default.image
     jpg: default.image
+    JPG: default.image
     pgm: default.image
     png: default.image
     ppm: default.image
