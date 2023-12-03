@@ -8,5 +8,5 @@ GITBRANCH   = $(shell git rev-parse --abbrev-ref HEAD)
 GITCOMMIT   = $(shell git rev-parse HEAD)
 GITGOFIELS ?= $(shell git ls-files '*.go')
 
-TARGETDIRBASE = build-${PROJECT}
-TARGETDIR     = ${TARGETDIRBASE}-${UNIX}
+TARGETDIRBASE = build
+TARGETDIR     = ${TARGETDIRBASE}/${PROJECT}-${UNIX}

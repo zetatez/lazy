@@ -65,7 +65,6 @@ func (l *Lazy) View() {
 		l.exec(cmd)
 		return
 	}
-
 	fakeCmd1, ok1 = config.GetConfig().View.Mime[sugar.GetFileMimeType(l.filePath)]
 	fakeCmd2, ok2 = config.GetConfig().View.Preset[fakeCmd1]
 	if ok1 && !ok2 {
@@ -94,7 +93,6 @@ func (l *Lazy) Open() {
 		l.exec(cmd)
 		return
 	}
-
 	fakeCmd1, ok1 = config.GetConfig().Open.Mime[sugar.GetFileMimeType(l.filePath)]
 	fakeCmd2, ok2 = config.GetConfig().Open.Preset[fakeCmd1]
 	if ok1 && !ok2 {
@@ -131,7 +129,6 @@ func (l *Lazy) Exec() {
 		l.exec(cmd)
 		return
 	}
-
 	fakeCmd1, ok1 = config.GetConfig().Exec.Mime[sugar.GetFileMimeType(l.filePath)]
 	fakeCmd2, ok2 = config.GetConfig().Exec.Preset[fakeCmd1]
 	if ok1 && !ok2 {

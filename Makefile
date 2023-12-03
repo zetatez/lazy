@@ -63,6 +63,6 @@ uninstall:
 
 clean:
 	@echo "## clean"
-	rm -rf ${PROJECT} ${TARGETDIRBASE}-*
+	rm -rf ${PROJECT} ${TARGETDIRBASE}/*
 
 .PHONY: default list upgrade fmt-show-diff fmt tidy test vet build clean

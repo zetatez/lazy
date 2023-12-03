@@ -153,7 +153,6 @@ view:
     image/gif: default.image
     image/jpeg: default.image
     image/jpg: default.image
-    image/JPG: default.image
     image/png: default.image
     image/svg+xml: default.image
     image/vnd.djvu: djvutxt

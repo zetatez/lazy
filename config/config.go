@@ -52,8 +52,6 @@ func (s *Config) LoadCfg() (err error) {
 		path.Join(os.Getenv("HOME"), ".lazy.yaml"),
 		"/etc/lazy.yaml",
 	}
-
-	found := false
 	for _, f := range configFileList {
 		isExists, err := sugar.IsFileExists(f)
 		if err != nil {
@@ -69,13 +67,8 @@ func (s *Config) LoadCfg() (err error) {
 		if err = yaml.Unmarshal(fbyte, &s); err != nil {
 			return err
 		}
-		found = true
-		break
+		return nil
 	}
 
-	if !found {
-		return fmt.Errorf("no config file was found")
-	}
-
-	return nil
+	return fmt.Errorf("no config file was found")
 }
