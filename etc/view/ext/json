@@ -1,0 +1,2 @@
+cmds:
+  - jq --color-output .

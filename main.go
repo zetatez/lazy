@@ -7,10 +7,9 @@ import (
 	"os"
 	"os/exec"
 	"path"
-	"strings"
 
 	"github.com/zetatez/lazy/config"
-	"github.com/zetatez/lazy/utils/sugar"
+	"github.com/zetatez/lazy/sugar"
 )
 
 const (
@@ -18,143 +17,134 @@ const (
 )
 
 const (
-	OptionView   = "view"
-	OptionOpen   = "open"
-	OptionExec   = "exec"
-	OptionRename = "rename"
-	OptionCopy   = "copy"
-	OptionDelete = "delete"
+	OptionVIEW = "view"
+	OptionOPEN = "open"
+	OptionEXEC = "exec"
+	OptionMV   = "mv"
+	OptionCP   = "cp"
+	OptionRM   = "rm"
 )
 
 var Options = map[string]bool{
-	OptionView:   true,
-	OptionOpen:   true,
-	OptionExec:   true,
-	OptionRename: true,
-	OptionCopy:   true,
-	OptionDelete: true,
+	OptionVIEW: true,
+	OptionOPEN: true,
+	OptionEXEC: true,
+	OptionMV:   true,
+	OptionCP:   true,
+	OptionRM:   true,
 }
 
 type Lazy struct {
 	filePath string
+	mimetype string
+	ext      string
 }
 
 func NewLazy(filePath string) *Lazy {
-	return &Lazy{filePath: filePath}
+	return &Lazy{
+		filePath: filePath,
+		mimetype: sugar.GetFileMimeType(filePath),
+		ext:      sugar.GetFileExt(filePath),
+	}
 }
 
-func (l *Lazy) exec(cmd string) {
+func (l *Lazy) exec(cmd string) (err error) {
 	fmt.Println("bash -c ", cmd)
 	c := exec.Command("bash", "-c", cmd)
-	c.Stdout = os.Stdout
-	c.Stderr = os.Stderr
-	c.Run()
+	c.Stdout, c.Stderr = os.Stdout, os.Stderr
+	return c.Run()
 }
 
-func (l *Lazy) View() {
-	cmd := ""
-	fakeCmd1, ok1 := config.GetConfig().View.Ext[sugar.GetFileExtx(l.filePath)]
-	fakeCmd2, ok2 := config.GetConfig().View.Preset[fakeCmd1]
-	if ok1 && !ok2 {
-		cmd = fmt.Sprintf(`%s '%s'`, fakeCmd1, l.filePath)
-		l.exec(cmd)
-		return
+func (l *Lazy) VIEW() {
+	cfg1, err1 := config.LoadConfig(
+		path.Join("view", "ext", l.ext),
+	)
+	if err1 == nil {
+		for _, cmd := range cfg1.Cmds {
+			err := l.exec(
+				fmt.Sprintf(`%s '%s'`, cmd, l.filePath),
+			)
+			if err == nil {
+				return
+			} else {
+				sugar.Notify(err)
+			}
+		}
 	}
-	if ok1 && ok2 {
-		cmd = fmt.Sprintf(`%s '%s'`, fakeCmd2, l.filePath)
-		l.exec(cmd)
-		return
-	}
-	fakeCmd1, ok1 = config.GetConfig().View.Mime[sugar.GetFileMimeType(l.filePath)]
-	fakeCmd2, ok2 = config.GetConfig().View.Preset[fakeCmd1]
-	if ok1 && !ok2 {
-		cmd = fmt.Sprintf(`%s '%s'`, fakeCmd1, l.filePath)
-		l.exec(cmd)
-		return
-	}
-	if ok1 && ok2 {
-		cmd = fmt.Sprintf(`%s '%s'`, fakeCmd2, l.filePath)
-		l.exec(cmd)
-		return
-	}
-}
 
-func (l *Lazy) Open() {
-	cmd := ""
-	fakeCmd1, ok1 := config.GetConfig().Open.Ext[sugar.GetFileExtx(l.filePath)]
-	fakeCmd2, ok2 := config.GetConfig().Open.Preset[fakeCmd1]
-	if ok1 && !ok2 {
-		cmd = fmt.Sprintf(`%s '%s'`, fakeCmd1, l.filePath)
-		l.exec(cmd)
-		return
-	}
-	if ok1 && ok2 {
-		cmd = fmt.Sprintf(`%s '%s'`, fakeCmd2, l.filePath)
-		l.exec(cmd)
-		return
-	}
-	fakeCmd1, ok1 = config.GetConfig().Open.Mime[sugar.GetFileMimeType(l.filePath)]
-	fakeCmd2, ok2 = config.GetConfig().Open.Preset[fakeCmd1]
-	if ok1 && !ok2 {
-		cmd = fmt.Sprintf(`%s '%s'`, fakeCmd1, l.filePath)
-		l.exec(cmd)
-		return
-	}
-	if ok1 && ok2 {
-		cmd = fmt.Sprintf(`%s '%s'`, fakeCmd2, l.filePath)
-		l.exec(cmd)
-		return
+	cfg2, err2 := config.LoadConfig(
+		path.Join("view", "mime", l.mimetype),
+	)
+	if err2 == nil {
+		for _, cmd := range cfg2.Cmds {
+			err := l.exec(
+				fmt.Sprintf(`%s '%s'`, cmd, l.filePath),
+			)
+			if err == nil {
+				return
+			} else {
+				sugar.Notify(err)
+			}
+		}
 	}
 }
 
-func (l *Lazy) Exec() {
-	cmd := ""
-	fakeCmd1, ok1 := config.GetConfig().Exec.Ext[sugar.GetFileExtx(l.filePath)]
-	fakeCmd2, ok2 := config.GetConfig().Exec.Preset[fakeCmd1]
-	if ok1 && !ok2 {
-		if strings.Contains(fakeCmd1, "{}") {
-			cmd = strings.ReplaceAll(fakeCmd1, "{}", fmt.Sprintf(`"%s"`, l.filePath))
-		} else {
-			cmd = fakeCmd1
+func (l *Lazy) OPEN() {
+	cfg1, err1 := config.LoadConfig(
+		path.Join("open", "ext", l.ext),
+	)
+	if err1 == nil {
+		for _, cmd := range cfg1.Cmds {
+			err := l.exec(
+				fmt.Sprintf(`%s '%s'`, cmd, l.filePath),
+			)
+			if err == nil {
+				return
+			} else {
+				sugar.Notify(err)
+			}
 		}
-		l.exec(cmd)
-		return
 	}
-	if ok1 && ok2 {
-		if strings.Contains(fakeCmd2, "{}") {
-			cmd = strings.ReplaceAll(fakeCmd2, "{}", fmt.Sprintf(`"%s"`, l.filePath))
-		} else {
-			cmd = fakeCmd2
+
+	cfg2, err2 := config.LoadConfig(
+		path.Join("open", "mime", l.mimetype),
+	)
+	if err2 == nil {
+		for _, cmd := range cfg2.Cmds {
+			err := l.exec(
+				fmt.Sprintf(`%s '%s'`, cmd, l.filePath),
+			)
+			if err == nil {
+				return
+			} else {
+				sugar.Notify(err)
+			}
 		}
-		l.exec(cmd)
-		return
-	}
-	fakeCmd1, ok1 = config.GetConfig().Exec.Mime[sugar.GetFileMimeType(l.filePath)]
-	fakeCmd2, ok2 = config.GetConfig().Exec.Preset[fakeCmd1]
-	if ok1 && !ok2 {
-		if strings.Contains(fakeCmd1, "{}") {
-			cmd = strings.ReplaceAll(fakeCmd1, "{}", fmt.Sprintf(`"%s"`, l.filePath))
-		} else {
-			cmd = fakeCmd1
-		}
-		l.exec(cmd)
-		return
-	}
-	if ok1 && ok2 {
-		if strings.Contains(fakeCmd1, "{}") {
-			cmd = strings.ReplaceAll(fakeCmd2, "{}", fmt.Sprintf(`"%s"`, l.filePath))
-		} else {
-			cmd = fakeCmd1
-		}
-		l.exec(cmd)
-		return
 	}
 }
 
-func (l *Lazy) Rename() {
+func (l *Lazy) EXEC() {
+	cfg1, err1 := config.LoadConfig(
+		path.Join("exec", "ext", l.ext),
+	)
+	if err1 == nil {
+		for _, cmd := range cfg1.Cmds {
+			err := l.exec(
+				fmt.Sprintf(`%s '%s'`, cmd, l.filePath),
+			)
+			if err == nil {
+				return
+			} else {
+				sugar.Notify(err)
+			}
+		}
+	}
+}
+
+func (l *Lazy) MV() {
 	var newFileName string
 	parent := sugar.GetFileParent(l.filePath)
-	fmt.Printf("rename %s -> %s", l.filePath, parent)
+	fmt.Printf("mv %s -> %s", l.filePath, parent)
 	fmt.Scanf("%s", &newFileName)
 	if newFileName == "" {
 		newFileName = sugar.GetFileBase(l.filePath) + ".bk"
@@ -163,15 +153,17 @@ func (l *Lazy) Rename() {
 	os.Rename(l.filePath, newFilePath)
 }
 
-func (l *Lazy) Delete() {
+func (l *Lazy) RM() {
 	fmt.Printf("rm -rf %s\n", l.filePath)
 	os.Remove(l.filePath)
 }
 
-func (l *Lazy) Copy() {
-	var newFileName string
+func (l *Lazy) CP() {
 	parent := sugar.GetFileParent(l.filePath)
-	fmt.Printf("copy %s -> %s", l.filePath, parent)
+
+	fmt.Printf("cp %s -> %s", l.filePath, parent)
+
+	var newFileName string
 	fmt.Scanf("%s", &newFileName)
 	if newFileName == "" {
 		newFileName = sugar.GetFileBase(l.filePath) + ".bk"
@@ -205,21 +197,21 @@ func (l *Lazy) Help() {
 	SYNOPSIS
 		lazy -v
 		lazy -h
-		lazy -o option -f file
+		lazy -o <OPTION> -f <file>
 
 	DESCRIPTION
-		lazy is a tool for cli to open, exec, copy, rename, delete file automatically.
+		lazy is a tool for cli to view, open, exec, cp, mv, rm file automatically.
 
-	OPTIONS
-		-view     view file with your default setting
-		-open     open file with your default setting
-		-exec     exec script with your default setting
-		-copy     copy file
-		-rename   rename file
-		-delete   delete file.
+	OPTION
+		-view    view file   with your default setting
+		-open    open file   with your default setting
+		-exec    exec script with your default setting
+		-cp      cp file
+		-mv      mv file
+		-rm      rm file
 
 	BUGS
-		Send all bug reports with a patch to zetatez@icloud.com.
+		Send bug report with a patch to zetatez@icloud.com.
 	"`
 	fmt.Println(docs)
 }
@@ -227,7 +219,7 @@ func (l *Lazy) Help() {
 func main() {
 	h := flag.Bool("h", false, "help")
 	v := flag.Bool("v", false, "version")
-	option := flag.String("o", "", "option, available options: view, open, exec, copy, rename, delete")
+	option := flag.String("o", "", "option, available options: view, open, exec, cp, mv, rm")
 	filePath := flag.String("f", "", "filePath")
 	flag.Parse()
 
@@ -239,39 +231,33 @@ func main() {
 		NewLazy("").Version()
 		return
 	}
-	if *filePath == "" {
-		return
-	}
-	if exists, _ := sugar.IsFileExists(*filePath); !exists {
-		fmt.Println("file not exists")
-		return
-	}
-
 	if _, ok := Options[*option]; !ok {
 		NewLazy("").Help()
 		return
 	}
+	if *filePath == "" {
+		return
+	}
 
-	err := config.GetConfig().LoadCfg()
-	if err != nil {
-		fmt.Println(err)
+	if !sugar.IsFileExists(*filePath) {
+		fmt.Println("file not exists")
 		return
 	}
 
 	lazy := NewLazy(*filePath)
 	switch *option {
-	case OptionView:
-		lazy.View()
-	case OptionOpen:
-		lazy.Open()
-	case OptionExec:
-		lazy.Exec()
-	case OptionRename:
-		lazy.Rename()
-	case OptionCopy:
-		lazy.Copy()
-	case OptionDelete:
-		lazy.Delete()
+	case OptionVIEW:
+		lazy.VIEW()
+	case OptionOPEN:
+		lazy.OPEN()
+	case OptionEXEC:
+		lazy.EXEC()
+	case OptionMV:
+		lazy.MV()
+	case OptionCP:
+		lazy.CP()
+	case OptionRM:
+		lazy.RM()
 	default:
 		NewLazy("").Help()
 	}

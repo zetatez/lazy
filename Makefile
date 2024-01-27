@@ -51,7 +51,7 @@ build: fmt-show-diff fmt tidy test vet
 install: clean build uninstall
 	@echo "## install"
 	rm -rf ~/.config/lazy
-	mkdir -p ~/.config/lazy && cp -f lazy.yaml ~/.config/lazy/
+	mkdir -p ~/.config/lazy && cp -rf etc ~/.config/lazy/
 	sudo cp -f ./lazy ${INSTALLPATH}
 	@echo "install done"
 
