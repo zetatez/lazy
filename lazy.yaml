@@ -249,6 +249,8 @@ open:
     svg: default.image
     tiff: default.image
     webp: default.image
+    arw: xdg-open
+    ARW: xdg-open
     # audio formats
     flac: default.audio
     m3u: default.video
