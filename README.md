@@ -41,7 +41,6 @@ lazy -h
     bindkey -s '^N' 'lazy-copy-search-file-of-dir ./\n'
     bindkey -s '^V' 'lazy-rename-search-file-of-dir ./\n'
     bindkey -s '^Z' 'lazy-delete-search-file-of-dir ./\n'
-    bindkey -s '^Y' 'lazy-open-search-file-content\n'
     ```
 
 ## LICENSE
