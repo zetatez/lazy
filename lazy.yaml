@@ -82,6 +82,7 @@ view:
     mkv: default.video
     mov: default.video
     mp4: default.video
+    MP4: default.video
     ts: default.video
     webm: default.video
     wmv: default.video
@@ -266,6 +267,7 @@ open:
     mkv: default.video
     mov: default.video
     mp4: default.video
+    MP4: default.video
     ts: default.video
     webm: default.video
     wmv: default.video
