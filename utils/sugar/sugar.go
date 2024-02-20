@@ -23,18 +23,7 @@ func GetFileBase(filePath string) (base string) {
 }
 
 func GetFileExt(filePath string) (ext string) {
-	return path.Ext(filePath)
-}
-
-func GetFileExtx(filePath string) (ext string) {
-	ext = path.Ext(filePath)
-	if ext == filePath {
-		return filePath
-	}
-	if ext != "" && ext[0] == '.' {
-		ext = ext[1:]
-	}
-	return ext
+	return strings.TrimPrefix(path.Ext(filePath), ".")
 }
 
 func GetFilePrefix(filePath string) (prefix string) {

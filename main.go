@@ -37,23 +37,60 @@ var Options = map[string]bool{
 
 type Lazy struct {
 	filePath string
+	mimetype string
+	ext      string
 }
 
 func NewLazy(filePath string) *Lazy {
-	return &Lazy{filePath: filePath}
+	return &Lazy{
+		filePath: filePath,
+		mimetype: sugar.GetFileMimeType(filePath),
+		ext:      sugar.GetFileExt(filePath),
+	}
 }
 
 func (l *Lazy) exec(cmd string) {
 	fmt.Println("bash -c ", cmd)
 	c := exec.Command("bash", "-c", cmd)
-	c.Stdout = os.Stdout
-	c.Stderr = os.Stderr
+	c.Stdout, c.Stderr = os.Stdout, os.Stderr
 	c.Run()
+}
+
+// func (l *Lazy) View() {
+// 	cmd := ""
+// 	fakeCmd1, ok1 := config.GetConfig().View.Ext[sugar.GetFileExt(l.filePath)]
+// 	fakeCmd2, ok2 := config.GetConfig().View.Preset[fakeCmd1]
+// 	if ok1 && !ok2 {
+// 		cmd = fmt.Sprintf(`%s '%s'`, fakeCmd1, l.filePath)
+// 		l.exec(cmd)
+// 		return
+// 	}
+// 	if ok1 && ok2 {
+// 		cmd = fmt.Sprintf(`%s '%s'`, fakeCmd2, l.filePath)
+// 		l.exec(cmd)
+// 		return
+// 	}
+// 	fakeCmd1, ok1 = config.GetConfig().View.Mime[sugar.GetFileMimeType(l.filePath)]
+// 	fakeCmd2, ok2 = config.GetConfig().View.Preset[fakeCmd1]
+// 	if ok1 && !ok2 {
+// 		cmd = fmt.Sprintf(`%s '%s'`, fakeCmd1, l.filePath)
+// 		l.exec(cmd)
+// 		return
+// 	}
+// 	if ok1 && ok2 {
+// 		cmd = fmt.Sprintf(`%s '%s'`, fakeCmd2, l.filePath)
+// 		l.exec(cmd)
+// 		return
+// 	}
+// }
+
+func (l *Lazy) getCfg(filePath string) (cfg string) {
+	return cfg
 }
 
 func (l *Lazy) View() {
 	cmd := ""
-	fakeCmd1, ok1 := config.GetConfig().View.Ext[sugar.GetFileExtx(l.filePath)]
+	fakeCmd1, ok1 := config.GetConfig().View.Ext[sugar.GetFileExt(l.filePath)]
 	fakeCmd2, ok2 := config.GetConfig().View.Preset[fakeCmd1]
 	if ok1 && !ok2 {
 		cmd = fmt.Sprintf(`%s '%s'`, fakeCmd1, l.filePath)
@@ -81,7 +118,7 @@ func (l *Lazy) View() {
 
 func (l *Lazy) Open() {
 	cmd := ""
-	fakeCmd1, ok1 := config.GetConfig().Open.Ext[sugar.GetFileExtx(l.filePath)]
+	fakeCmd1, ok1 := config.GetConfig().Open.Ext[sugar.GetFileExt(l.filePath)]
 	fakeCmd2, ok2 := config.GetConfig().Open.Preset[fakeCmd1]
 	if ok1 && !ok2 {
 		cmd = fmt.Sprintf(`%s '%s'`, fakeCmd1, l.filePath)
@@ -109,7 +146,7 @@ func (l *Lazy) Open() {
 
 func (l *Lazy) Exec() {
 	cmd := ""
-	fakeCmd1, ok1 := config.GetConfig().Exec.Ext[sugar.GetFileExtx(l.filePath)]
+	fakeCmd1, ok1 := config.GetConfig().Exec.Ext[sugar.GetFileExt(l.filePath)]
 	fakeCmd2, ok2 := config.GetConfig().Exec.Preset[fakeCmd1]
 	if ok1 && !ok2 {
 		if strings.Contains(fakeCmd1, "{}") {
@@ -239,24 +276,24 @@ func main() {
 		NewLazy("").Version()
 		return
 	}
+	if _, ok := Options[*option]; !ok {
+		NewLazy("").Help()
+		return
+	}
 	if *filePath == "" {
 		return
 	}
+
 	if exists, _ := sugar.IsFileExists(*filePath); !exists {
 		fmt.Println("file not exists")
 		return
 	}
 
-	if _, ok := Options[*option]; !ok {
-		NewLazy("").Help()
-		return
-	}
-
-	err := config.GetConfig().LoadCfg()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
+	// err := config.GetConfig().LoadCfg()
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	return
+	// }
 
 	lazy := NewLazy(*filePath)
 	switch *option {
