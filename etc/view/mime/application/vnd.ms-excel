@@ -1,1 +1,2 @@
-xls2csv
+cmds:
+  - xls2csv

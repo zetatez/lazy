@@ -1,1 +1,2 @@
-julia {}
+cmds:
+  - julia

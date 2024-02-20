@@ -1,1 +1,2 @@
-atool --list --
+cmds;
+  - atool --list --

@@ -10,44 +10,36 @@ import (
 )
 
 type Config struct {
-	CMD string `yaml:"cmd"`
+	Cmds []string `yaml:"cmds"`
 }
 
-func NewConfig() *Config {
-	return &Config{}
-}
-
-func (s *Config) load(f string) (err error) {
-	isExists, err := sugar.IsFileExists(f)
-	if err != nil {
-		return err
-	}
-	if !isExists {
-		fmt.Errorf("config file %s not exists", f)
-	}
-	fbyte, err := os.ReadFile(f)
-	if err != nil {
-		return err
-	}
-	if err = yaml.Unmarshal(fbyte, &s); err != nil {
-		return err
-	}
-	return nil
-}
-
-func GetConfig(suffix string) (cfg *Config) {
+func LoadConfig(suffix string) (cfg *Config, err error) {
 	prefixes := []string{
 		"./etc",
 		path.Join(os.Getenv("HOME"), ".config", "lazy", "etc"),
 	}
-	s := NewConfig()
+	cfg = &Config{}
+	found := false
 	for _, prefix := range prefixes {
 		f := path.Join(prefix, suffix)
-		err := s.load(f)
+		isExists, err := sugar.IsFileExists(f)
 		if err != nil {
+			return nil, err
+		}
+		if !isExists {
 			continue
 		}
+		fbyte, err := os.ReadFile(f)
+		if err != nil {
+			return nil, err
+		}
+		if err = yaml.Unmarshal(fbyte, &cfg); err != nil {
+			return nil, err
+		}
+		found = true
 	}
-
-	return cfg
+	if !found {
+		return nil, fmt.Errorf("config file %s not found", suffix)
+	}
+	return cfg, nil
 }

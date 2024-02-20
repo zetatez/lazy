@@ -1,1 +1,2 @@
-sxiv -a
+cmds:
+  - sxiv -a

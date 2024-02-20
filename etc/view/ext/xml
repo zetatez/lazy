@@ -1,1 +1,3 @@
-mediainfo
+cmds:
+  - mediainfo
+

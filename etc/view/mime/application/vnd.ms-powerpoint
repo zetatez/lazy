@@ -1,1 +1,2 @@
-pandoc -s -t markdown
+cmds:
+  - pandoc -s -t markdown

@@ -1,1 +1,2 @@
-transmission-show --
+cmds:
+  - transmission-show --

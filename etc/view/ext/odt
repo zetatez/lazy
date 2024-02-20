@@ -1,1 +1,2 @@
-odt2txt
+cmds:
+  - odt2txt
