@@ -17,6 +17,7 @@ func LoadConfig(suffix string) (cfg *Config, err error) {
 	prefixes := []string{
 		"./etc",
 		path.Join(os.Getenv("HOME"), ".config", "lazy", "etc"),
+		path.Join(os.Getenv("HOME"), ".lazy", "etc"),
 	}
 	cfg = &Config{}
 	found := false

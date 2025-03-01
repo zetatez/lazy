@@ -76,5 +76,5 @@ func GetFileMimeType(filePath string) (mimeType string) {
 }
 
 func Notify(msg ...interface{}) {
-	NewExecService().RunScriptShell(fmt.Sprintf("notify-send '%v'", msg))
+	NewExecService().RunScript("bash", fmt.Sprintf("notify-send '%v'", msg))
 }
