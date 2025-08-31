@@ -1,2 +1,0 @@
-cmds:
-  - bat --color=always --paging=never --tabs=2 --line-range :500

@@ -1,68 +1,30 @@
-include config.mk
+APP_NAME := lazy
+INSTALL_DIR := /usr/local/bin
+CONFIG_DIR := $(HOME)/.config/lazy
+CONFIG_FILE := $(CONFIG_DIR)/config.yaml
 
-default: clean build
+.PHONY: all build install clean
 
-list:
-	@echo "## list"
-	@echo "### local packages"
-	go list ./...
-	@echo
-	@echo "### all dep packages"
-	go list -m all
-	@echo
-	@echo "### upgradeable packages"
-	go list -m -u all
+all: build
 
-upgrade: list
-	@echo "## upgrade"
-	go get -u
+build:
+	@echo "==> Building $(APP_NAME)..."
+	go build -o ./$(APP_NAME) .
 
-fmt-show-diff:
-	@echo "## fmt-show-diff"
-	gofmt -s -l -d ${GITGOFIELS}
-
-fmt:
-	@echo "## fmt"
-	gofmt -s -w ${GITGOFIELS}
-
-tidy:
-	@echo "## tidy"
-	go mod tidy
-
-test:
-	@echo "## test"
-	go test -cpu=1,2,4 -v -tags integration ./...
-
-vet:
-	@echo "## vet"
-	go vet $(echo ${GITGOFIELS}|grep -v /vendor/)
-
-build: fmt-show-diff fmt tidy test vet
-	@echo "## build"
-	go mod download
-	go build .
-	@chmod +x ./lazy
-	@mkdir -p ${TARGETDIR}/
-	@cp lazy ${TARGETDIR}/
-	@echo "# summary:"
-	@echo -e "project: ${PROJECT}\nversion: ${VERSION}\ntimestamp: ${TIMESTAMP}\nbranch: ${GITBRANCH}\ncommit: ${GITCOMMIT}"  > ${TARGETDIR}/release-${PROJECT}-${VERSION}-${GITBRANCH}-${GITCOMMIT}-${UNIX}
-	@cat  ${TARGETDIR}/release*
-
-install: clean build uninstall
-	@echo "## install"
-	rm -rf ~/.config/lazy
-	mkdir -p ~/.config/lazy && cp -rf etc ~/.config/lazy/
-	sudo cp -f ./lazy ${INSTALLPATH}
-	@echo "install done"
+install: build
+	@echo "==> Installing $(APP_NAME) to $(INSTALL_DIR)..."
+	@sudo cp -f ./$(APP_NAME) $(INSTALL_DIR)/
+	@echo "==> Initializing config..."
+	@mkdir -p $(CONFIG_DIR)
+	cp config.yaml $(CONFIG_DIR)/config.yaml
 
 uninstall:
-	@echo "## uninstall"
-	rm -rf ~/.config/lazy
-	sudo rm -f ${INSTALLPATH}/${PROJECT}
-	@echo "uninstall done"
+	@echo "==> Uninstalling $(APP_NAME)..."
+	@sudo rm -f $(INSTALL_DIR)/$(APP_NAME)
+	@echo "==> Removing config..."
+	@rm -rf $(CONFIG_DIR)
 
 clean:
-	@echo "## clean"
-	rm -rf ${PROJECT} ${TARGETDIRBASE}/*
+	@echo "==> Cleaning..."
+	@rm -rf ./$(APP_NAME)
 
-.PHONY: default list upgrade fmt-show-diff fmt tidy test vet build clean

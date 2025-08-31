@@ -1,10 +1,8 @@
-module github.com/zetatez/lazy
+module lazy
 
-go 1.20
+go 1.25.1
 
 require (
-	github.com/gabriel-vasile/mimetype v1.4.2
-	gopkg.in/yaml.v2 v2.4.0
+	github.com/gabriel-vasile/mimetype v1.4.10
+	gopkg.in/yaml.v3 v3.0.1
 )
-
-require golang.org/x/net v0.38.0 // indirect

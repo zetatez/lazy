@@ -1,0 +1,113 @@
+view:
+  ext:
+    default:
+      - mediainfo
+    md:
+      - bat --color=always --paging=never --tabs=2 --line-range :500
+    txt:
+      - bat --color=always --paging=never --tabs=2 --line-range :500
+    log:
+      - bat --color=always --paging=never --tabs=2 --line-range :500
+    json:
+      - jq --color-output .
+    yaml:
+      - bat --color=always --paging=never --tabs=2 --line-range :500
+    go:
+      - bat --color=always --paging=never --tabs=2 --line-range :500
+    rs:
+      - bat --color=always --paging=never --tabs=2 --line-range :500
+    scala:
+      - bat --color=always --paging=never --tabs=2 --line-range :500
+    py:
+      - bat --color=always --paging=never --tabs=2 --line-range :500
+    sh:
+      - bat --color=always --paging=never --tabs=2 --line-range :500
+    ts:
+      - bat --color=always --paging=never --tabs=2 --line-range :500
+    js:
+      - bat --color=always --paging=never --tabs=2 --line-range :500
+    c:
+      - bat --color=always --paging=never --tabs=2 --line-range :500
+    cpp:
+      - bat --color=always --paging=never --tabs=2 --line-range :500
+    h:
+      - bat --color=always --paging=never --tabs=2 --line-range :500
+    tar:
+      - atool --list
+    rar:
+      - atool --list
+    zip:
+      - atool --list
+  mime:
+    default:
+      - mediainfo
+    text/plain:
+      - bat --color=always --paging=never --tabs=2 --line-range :500
+    text/diff:
+      - bat --color=always --paging=never --tabs=2 --line-range :500
+open:
+  ext:
+    default:
+      - nvim
+    md:
+      - nvim
+    txt:
+      - nvim
+    log:
+      - nvim
+    json:
+      - nvim
+    yaml:
+      - nvim
+    pdf:
+      - zathura
+    png:
+      - feh
+    jpg:
+      - sxiv
+    jpeg:
+      - sxiv
+    JPG:
+      - sxiv
+    JPEG:
+      - sxiv
+    PNG:
+      - feh
+    gif:
+      - sxiv -a
+    mp3:
+      - mpv
+    MP3:
+      - mpv
+    mp4:
+      - mpv
+    MP4:
+      - mpv
+    mov:
+      - mpv
+    MOV:
+      - mpv
+    tar:
+      - atool --list
+    rar:
+      - atool --list
+    zip:
+      - atool --list
+  mime:
+    default:
+      - nvim
+      - xdg-open
+    text/plain:
+      - nvim
+    text/diff:
+      - nvim
+exec:
+  ext:
+    default:
+      - bash
+    sh:
+      - bash
+    py:
+      - python
+    go:
+      - go run

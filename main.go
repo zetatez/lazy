@@ -3,138 +3,87 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io"
 	"os"
 	"os/exec"
-	"path"
 
-	"github.com/zetatez/lazy/config"
-	"github.com/zetatez/lazy/sugar"
+	"lazy/cfg"
+	"lazy/pkg/utils"
 )
 
-const VERSION = "0.0.1"
+type Action func(*Lazy, *cfg.Config)
 
-var Options = map[string]func(*Lazy){
-	"view": (*Lazy).View,
-	"open": (*Lazy).Open,
-	"exec": (*Lazy).Exec,
-	"mv":   (*Lazy).Mv,
-	"cp":   (*Lazy).Cp,
-	"rm":   (*Lazy).Rm,
+var Options = map[string]Action{
+	"view": (*Lazy).VIEW,
+	"open": (*Lazy).OPEN,
+	"exec": (*Lazy).EXEC,
 }
 
 type Lazy struct {
 	filePath string
-	mimetype string
 	ext      string
+	mimetype string
 }
 
 func NewLazy(filePath string) *Lazy {
 	return &Lazy{
 		filePath: filePath,
-		mimetype: sugar.GetFileMimeType(filePath),
-		ext:      sugar.GetFileExt(filePath),
+		ext:      utils.GetFileExt(filePath),
+		mimetype: utils.GetFileMimeType(filePath),
 	}
 }
 
+func (l *Lazy) VIEW(cfg *cfg.Config) {
+	l.runCmd(cfg, "view")
+}
+
+func (l *Lazy) OPEN(cfg *cfg.Config) {
+	l.runCmd(cfg, "open")
+}
+
+func (l *Lazy) EXEC(cfg *cfg.Config) {
+	l.runCmd(cfg, "exec")
+}
+
+func (l *Lazy) runCmd(cfg *cfg.Config, action string) {
+	var cmds []string
+
+	switch action {
+	case "open":
+		cmds = append(cmds, cfg.Open["ext"][l.ext]...)
+		cmds = append(cmds, cfg.Open["mine"][l.mimetype]...)
+		cmds = append(cmds, cfg.Open["ext"]["default"]...)
+		cmds = append(cmds, cfg.Open["mine"]["default"]...)
+	case "view":
+		cmds = append(cmds, cfg.View["ext"][l.ext]...)
+		cmds = append(cmds, cfg.View["mine"][l.mimetype]...)
+		cmds = append(cmds, cfg.View["ext"]["default"]...)
+		cmds = append(cmds, cfg.View["mine"]["default"]...)
+	case "exec":
+		cmds = append(cmds, cfg.Exec["ext"][l.ext]...)
+		cmds = append(cmds, cfg.Exec["mine"][l.mimetype]...)
+		cmds = append(cmds, cfg.Exec["ext"]["default"]...)
+		cmds = append(cmds, cfg.Exec["mine"]["default"]...)
+	}
+
+	for _, cmd := range cmds {
+		finalCmd := fmt.Sprintf(`%s '%s'`, cmd, l.filePath)
+		fmt.Printf("- try command: %s\n\n", finalCmd)
+		if err := l.exec(finalCmd); err == nil {
+			return
+		} else {
+			fmt.Println(err)
+		}
+	}
+	fmt.Println("all commands failed")
+}
+
 func (l *Lazy) exec(cmd string) error {
-	fmt.Println("Executing:", cmd)
 	c := exec.Command("bash", "-c", cmd)
 	c.Stdout, c.Stderr = os.Stdout, os.Stderr
 	return c.Run()
 }
 
-func (l *Lazy) runCmd(configPath string) (err error) {
-	cfg, err := config.LoadConfig(configPath)
-	if err != nil {
-		return err
-	}
-	for _, cmd := range cfg.Cmds {
-		if err = l.exec(fmt.Sprintf(`%s '%s'`, cmd, l.filePath)); err == nil {
-			return nil
-		} else {
-			sugar.Notify(err)
-		}
-	}
-	return err
-}
-
-func (l *Lazy) View() {
-	if l.runCmd(path.Join("view", "ext", l.ext)) == nil {
-		return
-	}
-	l.runCmd(path.Join("view", "mime", l.mimetype))
-}
-
-func (l *Lazy) Open() {
-	if l.runCmd(path.Join("open", "ext", l.ext)) == nil {
-		return
-	}
-	l.runCmd(path.Join("open", "mime", l.mimetype))
-}
-
-func (l *Lazy) Exec() {
-	l.runCmd(path.Join("exec", "ext", l.ext))
-}
-
-func (l *Lazy) Mv() {
-	parent := sugar.GetFileParent(l.filePath)
-	fmt.Printf("mv %s %s", l.filePath, parent)
-	var newFileName string
-	fmt.Scanf("%s", &newFileName)
-	if newFileName == "" {
-		newFileName = sugar.GetFileBase(l.filePath) + ".bk"
-	}
-	newFilePath := path.Join(parent, newFileName)
-	if err := os.Rename(l.filePath, newFilePath); err != nil {
-		fmt.Println("Error moving file:", err)
-		return
-	}
-}
-
-func (l *Lazy) Rm() {
-	fmt.Printf("rm %s\n", l.filePath)
-	if err := os.Remove(l.filePath); err != nil {
-		fmt.Println("Error removing file:", err)
-		return
-	}
-}
-
-func (l *Lazy) Cp() {
-	parent := sugar.GetFileParent(l.filePath)
-	fmt.Printf("cp %s %s", l.filePath, parent)
-	var newFileName string
-	fmt.Scanf("%s", &newFileName)
-	if newFileName == "" {
-		newFileName = sugar.GetFileBase(l.filePath) + ".bk"
-	}
-	newFilePath := path.Join(parent, newFileName)
-
-	src, err := os.Open(l.filePath)
-	if err != nil {
-		fmt.Println("Error opening source file:", err)
-		return
-	}
-	defer src.Close()
-
-	dst, err := os.OpenFile(newFilePath, os.O_WRONLY|os.O_CREATE, os.ModePerm)
-	if err != nil {
-		fmt.Println("Error creating destination file:", err)
-		return
-	}
-	defer dst.Close()
-
-	if _, err := io.Copy(dst, src); err != nil {
-		fmt.Println("Error copying file:", err)
-		return
-	}
-}
-
-func (l *Lazy) Version() {
-	fmt.Println(VERSION)
-}
-
-func (l *Lazy) Help() {
+func (l *Lazy) PrintHelp() {
 	fmt.Println(`
 NAME
 	lazy - A CLI tool that improves your work efficiency.
@@ -145,45 +94,61 @@ SYNOPSIS
 	lazy -o <OPTION> -f <file>
 
 DESCRIPTION
-	lazy is a tool for CLI to view, open, execute, copy, move, or remove files automatically.
+	lazy is a tool for CLI to view, open, execute files automatically.
 
 OPTIONS
-	-view    View file with your default setting.
+	-view    VIEW file with your default setting.
 	-open    Open file with your default setting.
 	-exec    Execute script with your default setting.
-	-cp      Copy file.
-	-mv      Move file.
-	-rm      Remove file.
 
 BUGS
 	Report bugs to zetatez@icloud.com.
 	`)
 }
 
+func (l *Lazy) PrintVersion() {
+	fmt.Println("lazy version: 0.0.1")
+}
+
 func main() {
 	h := flag.Bool("h", false, "help")
 	v := flag.Bool("v", false, "version")
-	option := flag.String("o", "", "operation (view, open, exec, cp, mv, rm)")
+	option := flag.String("o", "", "operation (view, open, exec)")
 	filePath := flag.String("f", "", "file path")
+	configPath := flag.String("c", os.ExpandEnv("$HOME/.config/lazy/config.yaml"), "config file path")
 	flag.Parse()
 
-	if *h {
-		NewLazy("").Help()
+	switch {
+	case *h:
+		NewLazy("").PrintHelp()
+		return
+	case *v:
+		NewLazy("").PrintVersion()
 		return
 	}
-	if *v {
-		NewLazy("").Version()
-		return
-	}
-
-	if *filePath == "" || !sugar.IsFileExists(*filePath) {
+	if *filePath == "" || !utils.IsFileExists(*filePath) {
 		fmt.Println("Error: File does not exist.")
 		return
 	}
-
+	cfg, err := cfg.LoadConfig(*configPath)
+	if err != nil {
+		fmt.Printf("Error loading config: %v\n", err)
+		return
+	}
 	lazy := NewLazy(*filePath)
+	fmt.Printf(`
+- FilePath: %s
+  - ext: %s
+  - minetype: %s,
+- Option: %s
+`,
+		*filePath,
+		lazy.ext,
+		lazy.mimetype,
+		*option,
+	)
 	if action, ok := Options[*option]; ok {
-		action(lazy)
+		action(lazy, cfg)
 	} else {
 		fmt.Println("Invalid option. Use -h for help.")
 	}
