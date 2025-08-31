@@ -15,12 +15,12 @@ import (
 const VERSION = "0.0.1"
 
 var Options = map[string]func(*Lazy){
-	"view": (*Lazy).View,
-	"open": (*Lazy).Open,
-	"exec": (*Lazy).Exec,
-	"mv":   (*Lazy).Mv,
-	"cp":   (*Lazy).Cp,
-	"rm":   (*Lazy).Rm,
+	"view": (*Lazy).VIEW,
+	"open": (*Lazy).OPEN,
+	"exec": (*Lazy).EXEC,
+	"mv":   (*Lazy).MV,
+	"cp":   (*Lazy).CP,
+	"rm":   (*Lazy).RM,
 }
 
 type Lazy struct {
@@ -59,25 +59,25 @@ func (l *Lazy) runCmd(configPath string) (err error) {
 	return err
 }
 
-func (l *Lazy) View() {
+func (l *Lazy) VIEW() {
 	if l.runCmd(path.Join("view", "ext", l.ext)) == nil {
 		return
 	}
 	l.runCmd(path.Join("view", "mime", l.mimetype))
 }
 
-func (l *Lazy) Open() {
+func (l *Lazy) OPEN() {
 	if l.runCmd(path.Join("open", "ext", l.ext)) == nil {
 		return
 	}
 	l.runCmd(path.Join("open", "mime", l.mimetype))
 }
 
-func (l *Lazy) Exec() {
+func (l *Lazy) EXEC() {
 	l.runCmd(path.Join("exec", "ext", l.ext))
 }
 
-func (l *Lazy) Mv() {
+func (l *Lazy) MV() {
 	parent := sugar.GetFileParent(l.filePath)
 	fmt.Printf("mv %s %s", l.filePath, parent)
 	var newFileName string
@@ -92,7 +92,7 @@ func (l *Lazy) Mv() {
 	}
 }
 
-func (l *Lazy) Rm() {
+func (l *Lazy) RM() {
 	fmt.Printf("rm %s\n", l.filePath)
 	if err := os.Remove(l.filePath); err != nil {
 		fmt.Println("Error removing file:", err)
@@ -100,7 +100,7 @@ func (l *Lazy) Rm() {
 	}
 }
 
-func (l *Lazy) Cp() {
+func (l *Lazy) CP() {
 	parent := sugar.GetFileParent(l.filePath)
 	fmt.Printf("cp %s %s", l.filePath, parent)
 	var newFileName string
@@ -148,7 +148,7 @@ DESCRIPTION
 	lazy is a tool for CLI to view, open, execute, copy, move, or remove files automatically.
 
 OPTIONS
-	-view    View file with your default setting.
+	-view    VIEW file with your default setting.
 	-open    Open file with your default setting.
 	-exec    Execute script with your default setting.
 	-cp      Copy file.
