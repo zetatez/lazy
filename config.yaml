@@ -67,25 +67,13 @@ open:
       - sxiv
     jpeg:
       - sxiv
-    JPG:
-      - sxiv
-    JPEG:
-      - sxiv
-    PNG:
-      - feh
     gif:
       - sxiv -a
     mp3:
       - mpv
-    MP3:
-      - mpv
     mp4:
       - mpv
-    MP4:
-      - mpv
     mov:
-      - mpv
-    MOV:
       - mpv
     tar:
       - atool --list

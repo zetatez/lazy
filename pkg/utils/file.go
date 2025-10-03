@@ -12,7 +12,7 @@ func GetFileBase(filePath string) (base string) {
 }
 
 func GetFileExt(filePath string) (ext string) {
-	return strings.TrimPrefix(path.Ext(filePath), ".")
+	return strings.ToLower(strings.TrimPrefix(path.Ext(filePath), "."))
 }
 
 func GetFilePrefix(filePath string) (prefix string) {
