@@ -38,10 +38,12 @@ view:
       - atool --list
     zip:
       - atool --list
-  mime:
+  mimetype:
     default:
       - mediainfo
     text/plain:
+      - bat --color=always --paging=never --tabs=2 --line-range :500
+    text/x-shellscript:
       - bat --color=always --paging=never --tabs=2 --line-range :500
     text/diff:
       - bat --color=always --paging=never --tabs=2 --line-range :500
@@ -81,13 +83,14 @@ open:
       - atool --list
     zip:
       - atool --list
-  mime:
+  mimetype:
     default:
       - nvim
-      - xdg-open
+    text/diff:
+      - nvim
     text/plain:
       - nvim
-    text/diff:
+    text/x-shellscript:
       - nvim
 exec:
   ext:

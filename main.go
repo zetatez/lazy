@@ -48,21 +48,21 @@ func (l *Lazy) runCmd(cfg *cfg.Config, action string) {
 	var cmds []string
 
 	switch action {
-	case "open":
-		cmds = append(cmds, cfg.Open["ext"][l.ext]...)
-		cmds = append(cmds, cfg.Open["mine"][l.mimetype]...)
-		cmds = append(cmds, cfg.Open["ext"]["default"]...)
-		cmds = append(cmds, cfg.Open["mine"]["default"]...)
 	case "view":
 		cmds = append(cmds, cfg.View["ext"][l.ext]...)
-		cmds = append(cmds, cfg.View["mine"][l.mimetype]...)
+		cmds = append(cmds, cfg.View["mimetype"][l.mimetype]...)
 		cmds = append(cmds, cfg.View["ext"]["default"]...)
-		cmds = append(cmds, cfg.View["mine"]["default"]...)
+		cmds = append(cmds, cfg.View["mimetype"]["default"]...)
+	case "open":
+		cmds = append(cmds, cfg.Open["ext"][l.ext]...)
+		cmds = append(cmds, cfg.Open["mimetype"][l.mimetype]...)
+		cmds = append(cmds, cfg.Open["ext"]["default"]...)
+		cmds = append(cmds, cfg.Open["mimetype"]["default"]...)
 	case "exec":
 		cmds = append(cmds, cfg.Exec["ext"][l.ext]...)
-		cmds = append(cmds, cfg.Exec["mine"][l.mimetype]...)
+		cmds = append(cmds, cfg.Exec["mimetype"][l.mimetype]...)
 		cmds = append(cmds, cfg.Exec["ext"]["default"]...)
-		cmds = append(cmds, cfg.Exec["mine"]["default"]...)
+		cmds = append(cmds, cfg.Exec["mimetype"]["default"]...)
 	}
 
 	for _, cmd := range cmds {
@@ -135,11 +135,12 @@ func main() {
 		fmt.Printf("Error loading config: %v\n", err)
 		return
 	}
+
 	lazy := NewLazy(*filePath)
 	fmt.Printf(`
 - FilePath: %s
   - ext: %s
-  - minetype: %s,
+  - mimetype: %s,
 - Option: %s
 `,
 		*filePath,

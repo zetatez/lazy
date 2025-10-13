@@ -16,7 +16,7 @@ install: build
 	@sudo cp -f ./$(APP_NAME) $(INSTALL_DIR)/
 	@echo "==> Initializing config..."
 	@mkdir -p $(CONFIG_DIR)
-	cp config.yaml $(CONFIG_DIR)/config.yaml
+	cp -f config.yaml $(CONFIG_DIR)/config.yaml
 
 uninstall:
 	@echo "==> Uninstalling $(APP_NAME)..."
