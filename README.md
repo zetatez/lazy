@@ -71,12 +71,12 @@ lazy -o exec -f /path/to/script.sh
 ## Best Practice
 
 - Use lazy in dwm:
-    - Hint: `st -e lazy-open-search-file-of-dir /`
+    - Hint: `st -e lazy_open_search_file_of_dir /`
 
 - Use lazy in zsh:
     ```bash
-    bindkey -s '^F' 'lazy-open-search-file-of-dir ./\n'
-    bindkey -s '^X' 'lazy-exec-search-file-of-dir ./\n'
+    bindkey -s '^F' 'lazy_open_search_file_of_dir ./\n'
+    bindkey -s '^X' 'lazy_exec_search_file_of_dir ./\n'
     ```
 
 ## LICENSE
