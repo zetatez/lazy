@@ -12,6 +12,8 @@ view:
       - jq --color-output .
     yaml:
       - bat --color=always --paging=never --tabs=2 --line-range :500
+    diff:
+      - bat --color=always --paging=never --tabs=2 --line-range :500
     go:
       - bat --color=always --paging=never --tabs=2 --line-range :500
     rs:
@@ -60,6 +62,8 @@ open:
     json:
       - nvim
     yaml:
+      - nvim
+    diff:
       - nvim
     pdf:
       - zathura
