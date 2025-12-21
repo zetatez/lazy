@@ -67,7 +67,7 @@ func (l *Lazy) runCmd(cfg *cfg.Config, action string) {
 
 	for _, cmd := range cmds {
 		finalCmd := fmt.Sprintf(`%s '%s'`, cmd, l.filePath)
-		fmt.Printf("- try command: %s\n\n", finalCmd)
+		fmt.Printf("- cmd: %s\n\n", finalCmd)
 		if err := l.exec(finalCmd); err == nil {
 			return
 		} else {
@@ -111,37 +111,37 @@ func (l *Lazy) PrintVersion() {
 }
 
 func main() {
-	h := flag.Bool("h", false, "help")
-	v := flag.Bool("v", false, "version")
+	help := flag.Bool("h", false, "help")
+	version := flag.Bool("v", false, "version")
 	option := flag.String("o", "", "operation (view, open, exec)")
 	filePath := flag.String("f", "", "file path")
 	configPath := flag.String("c", os.ExpandEnv("$HOME/.config/lazy/config.yaml"), "config file path")
 	flag.Parse()
 
 	switch {
-	case *h:
+	case *help:
 		NewLazy("").PrintHelp()
 		return
-	case *v:
+	case *version:
 		NewLazy("").PrintVersion()
 		return
 	}
 	if *filePath == "" || !utils.IsFileExists(*filePath) {
-		fmt.Println("Error: File does not exist.")
+		fmt.Println("file does not exist.")
 		return
 	}
 	cfg, err := cfg.LoadConfig(*configPath)
 	if err != nil {
-		fmt.Printf("Error loading config: %v\n", err)
+		fmt.Printf("loading configuration failed: %v\n", err)
 		return
 	}
 
 	lazy := NewLazy(*filePath)
 	fmt.Printf(`
-- FilePath: %s
+- file path: %s
   - ext: %s
-  - mimetype: %s,
-- Option: %s
+  - mimetype: %s
+- option: %s
 `,
 		*filePath,
 		lazy.ext,
