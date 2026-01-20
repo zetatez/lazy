@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
+	"strings"
 
 	"lazy/cfg"
 	"lazy/pkg/utils"
@@ -30,6 +32,22 @@ func NewLazy(filePath string) *Lazy {
 		ext:      utils.GetFileExt(filePath),
 		mimetype: utils.GetFileMimeType(filePath),
 	}
+}
+
+func isPathSafe(path string) bool {
+	cleanPath := filepath.Clean(path)
+	if cleanPath != path {
+		parts := strings.Split(path, "/")
+		for _, part := range parts {
+			if part == ".." {
+				return false
+			}
+		}
+	}
+	return !strings.Contains(cleanPath, "/../") &&
+		!strings.HasSuffix(cleanPath, "/..") &&
+		!strings.Contains(cleanPath, "/.../") &&
+		!strings.HasSuffix(cleanPath, "/...")
 }
 
 func (l *Lazy) VIEW(cfg *cfg.Config) {
@@ -66,7 +84,7 @@ func (l *Lazy) runCmd(cfg *cfg.Config, action string) {
 	}
 
 	for _, cmd := range cmds {
-		finalCmd := fmt.Sprintf(`%s '%s'`, cmd, l.filePath)
+		finalCmd := fmt.Sprintf(`%s '%s'`, cmd, escapeShellArg(l.filePath))
 		fmt.Printf("- cmd: %s\n\n", finalCmd)
 		if err := l.exec(finalCmd); err == nil {
 			return
@@ -75,6 +93,11 @@ func (l *Lazy) runCmd(cfg *cfg.Config, action string) {
 		}
 	}
 	fmt.Println("all commands failed")
+}
+
+func escapeShellArg(s string) string {
+	s = strings.ReplaceAll(s, `'`, `'\\''`)
+	return s
 }
 
 func (l *Lazy) exec(cmd string) error {
@@ -126,13 +149,25 @@ func main() {
 		NewLazy("").PrintVersion()
 		return
 	}
-	if *filePath == "" || !utils.IsFileExists(*filePath) {
-		fmt.Println("file does not exist.")
+
+	if *filePath == "" {
+		fmt.Println("Error: file path is required. Use -h for help.")
 		return
 	}
+
+	if !isPathSafe(*filePath) {
+		fmt.Println("Error: potentially unsafe path detected.")
+		return
+	}
+
+	if !utils.IsFileExists(*filePath) {
+		fmt.Println("Error: file does not exist.")
+		return
+	}
+
 	cfg, err := cfg.LoadConfig(*configPath)
 	if err != nil {
-		fmt.Printf("loading configuration failed: %v\n", err)
+		fmt.Printf("Error: loading configuration failed: %v\n", err)
 		return
 	}
 
@@ -151,6 +186,6 @@ func main() {
 	if action, ok := Options[*option]; ok {
 		action(lazy, cfg)
 	} else {
-		fmt.Println("Invalid option. Use -h for help.")
+		fmt.Println("Error: invalid option. Use -h for help.")
 	}
 }

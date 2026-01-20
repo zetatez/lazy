@@ -26,16 +26,24 @@ func IsFile(path string) (isFile bool) {
 	return !IsDir(path)
 }
 
-func IsDirExists(path string) (exist bool) {
+func IsDirExists(path string) bool {
 	if Exists(path) && IsDir(path) {
 		return true
 	}
 	return false
 }
 
-func IsFileExists(path string) (exist bool) {
+func IsFileExists(path string) bool {
 	if Exists(path) && IsFile(path) {
 		return true
 	}
 	return false
+}
+
+func IsSymlink(path string) bool {
+	info, err := os.Lstat(path)
+	if err != nil {
+		return false
+	}
+	return info.Mode()&os.ModeSymlink != 0
 }

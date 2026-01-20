@@ -1,40 +1,50 @@
 package utils
 
 import (
+	"os"
 	"path"
 	"strings"
 
 	"github.com/gabriel-vasile/mimetype"
 )
 
-func GetFileBase(filePath string) (base string) {
+func GetFileBase(filePath string) string {
 	return path.Base(filePath)
 }
 
-func GetFileExt(filePath string) (ext string) {
+func GetFileExt(filePath string) string {
 	return strings.ToLower(strings.TrimPrefix(path.Ext(filePath), "."))
 }
 
-func GetFilePrefix(filePath string) (prefix string) {
+func GetFilePrefix(filePath string) string {
 	base := path.Base(filePath)
 	ext := path.Ext(filePath)
-	prefix = base[:len(base)-len(ext)]
-	return prefix
+	if ext == "" {
+		return base
+	}
+	return base[:len(base)-len(ext)]
 }
 
-func GetFileParent(filePath string) (parent string) {
-	parent = filePath[:len(filePath)-len(path.Base(filePath))]
-	return parent
+func GetFileParent(filePath string) string {
+	return path.Dir(filePath)
 }
 
-func GetFileMimeType(filePath string) (mimeType string) {
+func GetFileMimeType(filePath string) string {
 	m, err := mimetype.DetectFile(filePath)
 	if err != nil {
 		return ""
 	}
-	ls := strings.Split(m.String(), ";")
+	ls := strings.SplitN(m.String(), ";", 2)
 	if len(ls) > 0 {
-		mimeType = ls[0]
+		return ls[0]
 	}
-	return mimeType
+	return ""
+}
+
+func GetFileSize(filePath string) int64 {
+	info, err := os.Stat(filePath)
+	if err != nil {
+		return 0
+	}
+	return info.Size()
 }
