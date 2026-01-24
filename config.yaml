@@ -9,7 +9,7 @@ view:
     log:
       - bat --color=always --paging=never --tabs=2 --line-range :500
     json:
-      - jq --color-output
+      - bat --color=always --paging=never --tabs=2 --line-range :500
     yaml:
       - bat --color=always --paging=never --tabs=2 --line-range :500
     diff:
