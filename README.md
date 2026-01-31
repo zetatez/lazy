@@ -49,7 +49,7 @@ make uninstall
 ---
 
 ## Configuration
-See *config.yaml*
+Configuration is compiled into the binary. Edit `config.go` to customize default commands.
 
 ---
 

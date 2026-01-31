@@ -1,0 +1,94 @@
+package main
+
+type Config struct {
+	View map[string]map[string][]string
+	Open map[string]map[string][]string
+	Exec map[string]map[string][]string
+}
+
+var DefaultConfig = &Config{
+	View: map[string]map[string][]string{
+		"ext": {
+			"default": {"mediainfo"},
+			"md":      {"bat --color=always --paging=never --tabs=2 --line-range :500"},
+			"txt":     {"bat --color=always --paging=never --tabs=2 --line-range :500"},
+			"log":     {"bat --color=always --paging=never --tabs=2 --line-range :500"},
+			"json":    {"bat --color=always --paging=never --tabs=2 --line-range :500"},
+			"yaml":    {"bat --color=always --paging=never --tabs=2 --line-range :500"},
+			"diff":    {"bat --color=always --paging=never --tabs=2 --line-range :500"},
+			"go":      {"bat --color=always --paging=never --tabs=2 --line-range :500"},
+			"rs":      {"bat --color=always --paging=never --tabs=2 --line-range :500"},
+			"py":      {"bat --color=always --paging=never --tabs=2 --line-range :500"},
+			"sh":      {"bat --color=always --paging=never --tabs=2 --line-range :500"},
+			"ts":      {"bat --color=always --paging=never --tabs=2 --line-range :500"},
+			"js":      {"bat --color=always --paging=never --tabs=2 --line-range :500"},
+			"c":       {"bat --color=always --paging=never --tabs=2 --line-range :500"},
+			"cpp":     {"bat --color=always --paging=never --tabs=2 --line-range :500"},
+			"h":       {"bat --color=always --paging=never --tabs=2 --line-range :500"},
+			"hpp":     {"bat --color=always --paging=never --tabs=2 --line-range :500"},
+			"lua":     {"bat --color=always --paging=never --tabs=2 --line-range :500"},
+			"vim":     {"bat --color=always --paging=never --tabs=2 --line-range :500"},
+			"toml":    {"bat --color=always --paging=never --tabs=2 --line-range :500"},
+			"xml":     {"bat --color=always --paging=never --tabs=2 --line-range :500"},
+			"html":    {"bat --color=always --paging=never --tabs=2 --line-range :500"},
+			"css":     {"bat --color=always --paging=never --tabs=2 --line-range :500"},
+			"sql":     {"bat --color=always --paging=never --tabs=2 --line-range :500"},
+			"tar":     {"atool --list"},
+			"rar":     {"atool --list"},
+			"zip":     {"atool --list"},
+			"7z":      {"atool --list"},
+		},
+		"mimetype": {
+			"default":            {"mediainfo"},
+			"text/plain":         {"bat --color=always --paging=never --tabs=2 --line-range :500"},
+			"text/x-shellscript": {"bat --color=always --paging=never --tabs=2 --line-range :500"},
+			"text/diff":          {"bat --color=always --paging=never --tabs=2 --line-range :500"},
+		},
+	},
+	Open: map[string]map[string][]string{
+		"ext": {
+			"default": {"nvim"},
+			"md":      {"nvim"},
+			"txt":     {"nvim"},
+			"log":     {"nvim"},
+			"json":    {"nvim"},
+			"yaml":    {"nvim"},
+			"diff":    {"nvim"},
+			"pdf":     {"zathura"},
+			"png":     {"feh"},
+			"jpg":     {"sxiv"},
+			"jpeg":    {"sxiv"},
+			"gif":     {"sxiv -a"},
+			"svg":     {"sxiv -a"},
+			"mp3":     {"mpv"},
+			"mp4":     {"mpv"},
+			"mov":     {"mpv"},
+			"avi":     {"mpv"},
+			"mkv":     {"mpv"},
+			"webm":    {"mpv"},
+			"tar":     {"atool --list"},
+			"rar":     {"atool --list"},
+			"zip":     {"atool --list"},
+			"7z":      {"atool --list"},
+		},
+		"mimetype": {
+			"default":            {"nvim"},
+			"text/diff":          {"nvim"},
+			"text/plain":         {"nvim"},
+			"text/x-shellscript": {"nvim"},
+		},
+	},
+	Exec: map[string]map[string][]string{
+		"ext": {
+			"default": {"bash"},
+			"sh":      {"bash"},
+			"py":      {"python3"},
+			"go":      {"go run"},
+			"rs":      {"cargo run"},
+			"js":      {"node"},
+			"ts":      {"ts-node"},
+			"lua":     {"lua"},
+		},
+		"mimetype": {},
+	},
+}

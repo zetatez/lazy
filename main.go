@@ -8,11 +8,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	"lazy/cfg"
 	"lazy/pkg/utils"
 )
 
-type Action func(*Lazy, *cfg.Config)
+type Action func(*Lazy, *Config)
 
 var Options = map[string]Action{
 	"view": (*Lazy).VIEW,
@@ -50,19 +49,19 @@ func isPathSafe(path string) bool {
 		!strings.HasSuffix(cleanPath, "/...")
 }
 
-func (l *Lazy) VIEW(cfg *cfg.Config) {
+func (l *Lazy) VIEW(cfg *Config) {
 	l.runCmd(cfg, "view")
 }
 
-func (l *Lazy) OPEN(cfg *cfg.Config) {
+func (l *Lazy) OPEN(cfg *Config) {
 	l.runCmd(cfg, "open")
 }
 
-func (l *Lazy) EXEC(cfg *cfg.Config) {
+func (l *Lazy) EXEC(cfg *Config) {
 	l.runCmd(cfg, "exec")
 }
 
-func (l *Lazy) runCmd(cfg *cfg.Config, action string) {
+func (l *Lazy) runCmd(cfg *Config, action string) {
 	var cmds []string
 
 	switch action {
@@ -138,7 +137,6 @@ func main() {
 	version := flag.Bool("v", false, "version")
 	option := flag.String("o", "", "operation (view, open, exec)")
 	filePath := flag.String("f", "", "file path")
-	configPath := flag.String("c", os.ExpandEnv("$HOME/.config/lazy/config.yaml"), "config file path")
 	flag.Parse()
 
 	switch {
@@ -165,11 +163,7 @@ func main() {
 		return
 	}
 
-	cfg, err := cfg.LoadConfig(*configPath)
-	if err != nil {
-		fmt.Printf("Error: loading configuration failed: %v\n", err)
-		return
-	}
+	cfg := DefaultConfig
 
 	lazy := NewLazy(*filePath)
 	fmt.Printf(`

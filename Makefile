@@ -1,7 +1,5 @@
 APP_NAME := lazy
 INSTALL_DIR := /usr/local/bin
-CONFIG_DIR := $(HOME)/.config/lazy
-CONFIG_FILE := $(CONFIG_DIR)/config.yaml
 LDFLAGS := -s -w
 
 .PHONY: all build install clean release
@@ -15,15 +13,10 @@ build:
 install: build
 	@echo "==> Installing $(APP_NAME) to $(INSTALL_DIR)..."
 	@sudo cp -f ./$(APP_NAME) $(INSTALL_DIR)/
-	@echo "==> Initializing config..."
-	@mkdir -p $(CONFIG_DIR)
-	cp -f config.yaml $(CONFIG_DIR)/config.yaml
 
 uninstall:
 	@echo "==> Uninstalling $(APP_NAME)..."
 	@sudo rm -f $(INSTALL_DIR)/$(APP_NAME)
-	@echo "==> Removing config..."
-	@rm -rf $(CONFIG_DIR)
 
 clean:
 	@echo "==> Cleaning..."
@@ -32,4 +25,3 @@ clean:
 release: build
 	@echo "==> Creating release for $(APP_NAME)..."
 	@echo "Binary size: $$(du -h ./$(APP_NAME) | cut -f1)"
-
