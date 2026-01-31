@@ -5,109 +5,21 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"path/filepath"
+	"path"
 	"strings"
 
-	"lazy/pkg/utils"
+	"github.com/gabriel-vasile/mimetype"
 )
 
-type Action func(*Lazy, *Config)
+const versionText = "0.1.0"
 
-var Options = map[string]Action{
-	"view": (*Lazy).VIEW,
-	"open": (*Lazy).OPEN,
-	"exec": (*Lazy).EXEC,
-}
+const startupText = `- file path: %s
+  - ext: %s
+  - mimetype: %s
+- option: %s
+`
 
-type Lazy struct {
-	filePath string
-	ext      string
-	mimetype string
-}
-
-func NewLazy(filePath string) *Lazy {
-	return &Lazy{
-		filePath: filePath,
-		ext:      utils.GetFileExt(filePath),
-		mimetype: utils.GetFileMimeType(filePath),
-	}
-}
-
-func isPathSafe(path string) bool {
-	cleanPath := filepath.Clean(path)
-	if cleanPath != path {
-		parts := strings.Split(path, "/")
-		for _, part := range parts {
-			if part == ".." {
-				return false
-			}
-		}
-	}
-	return !strings.Contains(cleanPath, "/../") &&
-		!strings.HasSuffix(cleanPath, "/..") &&
-		!strings.Contains(cleanPath, "/.../") &&
-		!strings.HasSuffix(cleanPath, "/...")
-}
-
-func (l *Lazy) VIEW(cfg *Config) {
-	l.runCmd(cfg, "view")
-}
-
-func (l *Lazy) OPEN(cfg *Config) {
-	l.runCmd(cfg, "open")
-}
-
-func (l *Lazy) EXEC(cfg *Config) {
-	l.runCmd(cfg, "exec")
-}
-
-func (l *Lazy) runCmd(cfg *Config, action string) {
-	var cmds []string
-
-	switch action {
-	case "view":
-		cmds = append(cmds, cfg.View["ext"][l.ext]...)
-		cmds = append(cmds, cfg.View["mimetype"][l.mimetype]...)
-		cmds = append(cmds, cfg.View["ext"]["default"]...)
-		cmds = append(cmds, cfg.View["mimetype"]["default"]...)
-	case "open":
-		cmds = append(cmds, cfg.Open["ext"][l.ext]...)
-		cmds = append(cmds, cfg.Open["mimetype"][l.mimetype]...)
-		cmds = append(cmds, cfg.Open["ext"]["default"]...)
-		cmds = append(cmds, cfg.Open["mimetype"]["default"]...)
-	case "exec":
-		cmds = append(cmds, cfg.Exec["ext"][l.ext]...)
-		cmds = append(cmds, cfg.Exec["mimetype"][l.mimetype]...)
-		cmds = append(cmds, cfg.Exec["ext"]["default"]...)
-		cmds = append(cmds, cfg.Exec["mimetype"]["default"]...)
-	}
-
-	for _, cmd := range cmds {
-		finalCmd := fmt.Sprintf(`%s '%s'`, cmd, escapeShellArg(l.filePath))
-		fmt.Printf("- cmd: %s\n\n", finalCmd)
-		if err := l.exec(finalCmd); err == nil {
-			return
-		} else {
-			fmt.Println(err)
-		}
-	}
-	fmt.Println("all commands failed")
-}
-
-func escapeShellArg(s string) string {
-	s = strings.ReplaceAll(s, `'`, `'\\''`)
-	return s
-}
-
-func (l *Lazy) exec(cmd string) error {
-	c := exec.Command("bash", "-c", cmd)
-	c.Stdout, c.Stderr = os.Stdout, os.Stderr
-	return c.Run()
-}
-
-func (l *Lazy) PrintHelp() {
-	fmt.Println(`
-NAME
+const helpText = `NAME
 	lazy - A CLI tool that improves your work efficiency.
 
 SYNOPSIS
@@ -124,12 +36,103 @@ OPTIONS
 	-exec    Execute script with your default setting.
 
 BUGS
-	Report bugs to zetatez@icloud.com.
-	`)
+	Report bugs to zetatez@icloud.com.`
+
+type Action func(*Lazy, *Config) bool
+
+var Options = map[string]Action{
+	"view": (*Lazy).VIEW,
+	"open": (*Lazy).OPEN,
+	"exec": (*Lazy).EXEC,
+}
+
+type Lazy struct {
+	filePath string
+	ext      string
+	mimetype string
+}
+
+func NewLazy(filePath string) *Lazy {
+	return &Lazy{
+		filePath: filePath,
+		ext:      getFileExt(filePath),
+		mimetype: getFileMimeType(filePath),
+	}
+}
+
+func (l *Lazy) VIEW(cfg *Config) bool {
+	return l.runCmd(cfg, "view")
+}
+
+func (l *Lazy) OPEN(cfg *Config) bool {
+	return l.runCmd(cfg, "open")
+}
+
+func (l *Lazy) EXEC(cfg *Config) bool {
+	return l.runCmd(cfg, "exec")
+}
+
+func (l *Lazy) runCmd(cfg *Config, action string) bool {
+	var cmds []string
+
+	cmds = append(cmds, cfg.getCmds(action, "ext", l.ext)...)
+	cmds = append(cmds, cfg.getCmds(action, "mimetype", l.mimetype)...)
+	cmds = append(cmds, cfg.getCmds(action, "ext", "default")...)
+	cmds = append(cmds, cfg.getCmds(action, "mimetype", "default")...)
+
+	for _, cmd := range cmds {
+		finalCmd := fmt.Sprintf(`%s '%s'`, cmd, escapeShellArg(l.filePath))
+		if err := l.exec(finalCmd); err != nil {
+			fmt.Fprintf(os.Stderr, "%s failed: %v\n", cmd, err)
+			continue
+		}
+		fmt.Println(finalCmd)
+		return true
+	}
+	return false
+}
+
+func escapeShellArg(s string) string {
+	s = strings.ReplaceAll(s, `'`, `'\\''`)
+	return s
+}
+
+func (l *Lazy) exec(cmd string) error {
+	c := exec.Command("bash", "-c", cmd)
+	c.Stdout, c.Stderr = os.Stdout, os.Stderr
+	return c.Run()
+}
+
+func getFileExt(filePath string) string {
+	return strings.ToLower(strings.TrimPrefix(path.Ext(filePath), "."))
+}
+
+func getFileMimeType(filePath string) string {
+	m, err := mimetype.DetectFile(filePath)
+	if err != nil {
+		return ""
+	}
+	parts := strings.SplitN(m.String(), ";", 2)
+	if len(parts) > 0 {
+		return parts[0]
+	}
+	return ""
+}
+
+func isFileExists(filePath string) bool {
+	info, err := os.Stat(filePath)
+	if err != nil {
+		return false
+	}
+	return !info.IsDir()
+}
+
+func (l *Lazy) PrintHelp() {
+	fmt.Println(helpText)
 }
 
 func (l *Lazy) PrintVersion() {
-	fmt.Println("lazy version: 0.0.1")
+	fmt.Println(versionText)
 }
 
 func main() {
@@ -153,12 +156,7 @@ func main() {
 		return
 	}
 
-	if !isPathSafe(*filePath) {
-		fmt.Println("Error: potentially unsafe path detected.")
-		return
-	}
-
-	if !utils.IsFileExists(*filePath) {
+	if !isFileExists(*filePath) {
 		fmt.Println("Error: file does not exist.")
 		return
 	}
@@ -166,20 +164,11 @@ func main() {
 	cfg := DefaultConfig
 
 	lazy := NewLazy(*filePath)
-	fmt.Printf(`
-- file path: %s
-  - ext: %s
-  - mimetype: %s
-- option: %s
-`,
-		*filePath,
-		lazy.ext,
-		lazy.mimetype,
-		*option,
-	)
-	if action, ok := Options[*option]; ok {
-		action(lazy, cfg)
-	} else {
+	action, ok := Options[*option]
+	if !ok {
 		fmt.Println("Error: invalid option. Use -h for help.")
+	}
+	if !action(lazy, cfg) {
+		fmt.Printf(startupText, *filePath, lazy.ext, lazy.mimetype, *option)
 	}
 }
