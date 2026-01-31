@@ -5,10 +5,11 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path"
 	"path/filepath"
 	"strings"
 
-	"lazy/pkg/utils"
+	"github.com/gabriel-vasile/mimetype"
 )
 
 type Action func(*Lazy, *Config)
@@ -28,25 +29,9 @@ type Lazy struct {
 func NewLazy(filePath string) *Lazy {
 	return &Lazy{
 		filePath: filePath,
-		ext:      utils.GetFileExt(filePath),
-		mimetype: utils.GetFileMimeType(filePath),
+		ext:      getFileExt(filePath),
+		mimetype: getFileMimeType(filePath),
 	}
-}
-
-func isPathSafe(path string) bool {
-	cleanPath := filepath.Clean(path)
-	if cleanPath != path {
-		parts := strings.Split(path, "/")
-		for _, part := range parts {
-			if part == ".." {
-				return false
-			}
-		}
-	}
-	return !strings.Contains(cleanPath, "/../") &&
-		!strings.HasSuffix(cleanPath, "/..") &&
-		!strings.Contains(cleanPath, "/.../") &&
-		!strings.HasSuffix(cleanPath, "/...")
 }
 
 func (l *Lazy) VIEW(cfg *Config) {
@@ -105,6 +90,43 @@ func (l *Lazy) exec(cmd string) error {
 	return c.Run()
 }
 
+func getFileExt(filePath string) string {
+	return strings.ToLower(strings.TrimPrefix(path.Ext(filePath), "."))
+}
+
+func getFileMimeType(filePath string) string {
+	m, err := mimetype.DetectFile(filePath)
+	if err != nil {
+		return ""
+	}
+	parts := strings.SplitN(m.String(), ";", 2)
+	if len(parts) > 0 {
+		return parts[0]
+	}
+	return ""
+}
+
+func isFileExists(filePath string) bool {
+	info, err := os.Stat(filePath)
+	if err != nil {
+		return false
+	}
+	return !info.IsDir()
+}
+
+func isPathSafe(path string) bool {
+	cleanPath := filepath.Clean(path)
+	if cleanPath != path {
+		return false
+	}
+	for _, part := range strings.Split(cleanPath, string(filepath.Separator)) {
+		if part == ".." {
+			return false
+		}
+	}
+	return true
+}
+
 func (l *Lazy) PrintHelp() {
 	fmt.Println(`
 NAME
@@ -158,7 +180,7 @@ func main() {
 		return
 	}
 
-	if !utils.IsFileExists(*filePath) {
+	if !isFileExists(*filePath) {
 		fmt.Println("Error: file does not exist.")
 		return
 	}

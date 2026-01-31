@@ -1,59 +1,29 @@
 # Lazy CLI
 
-`lazy` is a lightweight command-line tool that automatically selects the appropriate way to **view, open, or execute files** based on their type, improving your workflow efficiency.
-
----
+`lazy` is a lightweight CLI that picks the right command to **view**, **open**, or **execute** files based on file extension or MIME type.
 
 ## Features
-
-- **VIEW**: View file content using the default configured method.
-- **OPEN**: Open files with their default applications.
-- **EXEC**: Execute scripts or executable files.
-
-`lazy` selects commands based on file extension or MIME type, and falls back to default commands if no match is found.
-
----
+- **VIEW**: Show file content with your preferred viewer.
+- **OPEN**: Launch files with your default app.
+- **EXEC**: Execute scripts with the matching interpreter.
 
 ## Installation
-
-1. Clone the repository
-
 ```bash
 git clone https://github.com/zetatez/lazy.git
 cd lazy
-```
-
-2. Build the binary
-```bash
 make
-```
-
-3. Install the binary
-```bash
 make install
 ```
 
-4. Uninstall the binary
+Uninstall:
 ```bash
 make uninstall
 ```
 
----
-
-## Dependencies
-- [fd](https://github.com/sharkdp/fd)
-- [fzf](https://github.com/junegunn/fzf)
-- nvim
-- ...
-
----
-
 ## Configuration
-Configuration is compiled into the binary. Edit `config.go` to customize default commands.
+Configuration is compiled into the binary. Edit `config.go` and rebuild to customize defaults.
 
----
-
-## Usage Examples
+## Usage
 ```bash
 # Show help
 lazy -h
@@ -68,17 +38,19 @@ lazy -o open -f /path/to/file
 lazy -o exec -f /path/to/script.sh
 ```
 
+## Dependencies
+- [fd](https://github.com/sharkdp/fd)
+- [fzf](https://github.com/junegunn/fzf)
+- nvim
+- ...
+
 ## Best Practice
+- dwm: `st -e lazy_open_search_file_of_dir /`
+- zsh:
+```bash
+bindkey -s '^F' 'lazy_open_search_file_of_dir ./\n'
+bindkey -s '^X' 'lazy_exec_search_file_of_dir ./\n'
+```
 
-- Use lazy in dwm:
-    - Hint: `st -e lazy_open_search_file_of_dir /`
-
-- Use lazy in zsh:
-    ```bash
-    bindkey -s '^F' 'lazy_open_search_file_of_dir ./\n'
-    bindkey -s '^X' 'lazy_exec_search_file_of_dir ./\n'
-    ```
-
-## LICENSE
-
+## License
 MIT.
