@@ -6,7 +6,6 @@ import (
 	"os"
 	"os/exec"
 	"path"
-	"path/filepath"
 	"strings"
 
 	"github.com/gabriel-vasile/mimetype"
@@ -114,19 +113,6 @@ func isFileExists(filePath string) bool {
 	return !info.IsDir()
 }
 
-func isPathSafe(path string) bool {
-	cleanPath := filepath.Clean(path)
-	if cleanPath != path {
-		return false
-	}
-	for _, part := range strings.Split(cleanPath, string(filepath.Separator)) {
-		if part == ".." {
-			return false
-		}
-	}
-	return true
-}
-
 func (l *Lazy) PrintHelp() {
 	fmt.Println(`
 NAME
@@ -172,11 +158,6 @@ func main() {
 
 	if *filePath == "" {
 		fmt.Println("Error: file path is required. Use -h for help.")
-		return
-	}
-
-	if !isPathSafe(*filePath) {
-		fmt.Println("Error: potentially unsafe path detected.")
 		return
 	}
 
