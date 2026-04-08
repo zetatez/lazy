@@ -113,10 +113,7 @@ func getFileMimeType(filePath string) string {
 		return ""
 	}
 	parts := strings.SplitN(m.String(), ";", 2)
-	if len(parts) > 0 {
-		return parts[0]
-	}
-	return ""
+	return parts[0]
 }
 
 func isFileExists(filePath string) bool {
